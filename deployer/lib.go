@@ -473,7 +473,7 @@ func TerraformApply(configFile string) {
 
 	config := createConfig(configFile)
 
-	Initializing Terraform
+	//Initializing Terraform
 	args := "init -backend-config=\"access_key=" + config.AwsAccessID + "\" -backend-config=\"secret_key=" + config.AwsSecretKey + "\""
 
 	execBashTerraform(args, "terraform")
