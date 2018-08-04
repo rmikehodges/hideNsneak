@@ -69,6 +69,10 @@ then
     sudo pip install ansible
 fi
 
+echo "Grabbing Go dependencies"
+go get github.com/rmikehodges/hideNsneak/deployer
+go get github.com/rmikehodges/hideNsneak/cmd
+
 echo "Instantiating Backend DynamoDB Table"
 
 cd terraform/backend

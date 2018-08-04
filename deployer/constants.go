@@ -1,9 +1,10 @@
 package deployer
 
-const configFile = "config/config.json"
-const tfMainFile = "terraform/main.tf"
-const tfVariablesFile = "terraform/variables.tf"
-const tfVarsFile = "terraform/terraform.tfvars"
+var filepath = getTerraformDirectory()
+var tfMainFile = filepath + "/main.tf"
+var tfVariablesFile = filepath + "/variables.tf"
+var tfVarsFile = filepath + "/terraform.tfvars"
+
 const backend = `terraform {
 	backend "s3" {
 		bucket           = "{{.AwsS3BucketName}}"

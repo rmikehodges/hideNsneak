@@ -32,37 +32,55 @@ hideNsneak can:
 
 Running locally
 ---------------
-At this time, all hosts are assumed `Ubuntu 16.04 Linux`. In the future, we're hoping to add on a docker container to decrease initial setup time. 
+*A few disclosures for V 1.0:*
+* At this time, all hosts are assumed `Ubuntu 16.04 Linux`. In the future, we're hoping to add on a docker container to decrease initial setup time
+* The only cloud providers currently setup are AWS and Digital Ocean
+* *You need to make sure that go is installed.* Instructions can be found [here](https://golang.org/dl/)
 
-1. Create a new AWS S3 bucket for your state
+1. Create a new AWS S3 bucket in `us-east-1`
 	- Ensure this is not public as it will hold your terraform state
-2. run `./setup.sh`
-3. `cp config/example-config.json to config/config.json` 
+2. `go get github.com/rmikehodges/hideNsneak`
+3. `cd $GOPATH/src/github.com/rmikehodges/hideNsneak`
+4. `./setup.sh`
+5. `cp config/example-config.json config/config.json` 
 	- fill in the values
 	- aws_access_id, aws_secret_key, aws_bucket_name are required at minimum
-4. `go build -o hidensneak main.go`
-11. now you can use with `hidensneak [command]`
-
+6. now you can use the program by running `./hidensneak [command]`
 
 Commands
 ---------
 * `hidensneak help` --> run this anytime to get available commands 
+
 * `hidensneak instance deploy`
 * `hidensneak instance destroy`
 * `hidensneak instance list`
+
 * `hidensneak api deploy`
 * `hidensneak api destroy`
 * `hidensneak api list`
+
 * `hidensneak domainfront enable`
 * `hidensneak domainfront disable`
 * `hidensneak domainfront deploy`
 * `hidensneak domainfront destroy`
 * `hidensneak domainfront list`
+
+* `hidensneak firewall add`
+* `hidensneak firewall list`
+* `hidensneak firewall delete`
+
+* `hidensneak exec command -c`
+* `hidensneak exec nmap`
+* `hidensneak exec socat-redirect`
+* `hidensneak exec cobaltstrike-run`
+* `hidensneak exec collaborator-run`
+
 * `hidensneak socks deploy`
 * `hidensneak socks list`
 * `hidensneak socks destroy`
 * `hidensneak socks proxychains`
 * `hidensneak socks socksd`
+
 * `hidensneak install burp`
 * `hidensneak install cobaltstrike`
 * `hidensneak install socat`
@@ -70,6 +88,7 @@ Commands
 * `hidensneak install gophish`
 * `hidensneak install nmap`
 * `hidensneak install sqlmap`
+
 * `hidensneak file push`
 * `hidensneak file pull`
 
@@ -78,10 +97,10 @@ For all commands, you can run `--help` after any of them to get guidance on what
 
 Organization
 ------------
-* `_terraform` --> stuff related to deploying, destroying, and listing infrastucture
-* `_ansible` --> stuff related to ssh
+* `_terraform` --> terraform modules 
+* `_ansible` --> ansible roles and playbooks 
 * `_assets` --> random assets for the beauty of this project
-* `_cmd` --> frontend interface 
+* `_cmd` --> frontend interface package 
 * `_deployer` --> backend commands and structs
 * `main.go` --> where the magic happens 
 
@@ -92,15 +111,15 @@ We would love to have you contribute to hideNsneak. Feel free to pull the repo a
 
 Miscellaneous
 -------------
-All firewall rules are performed at the host level. All instances are restricted to port 22 upon deployment. In order to achieve this, a default security group is made in every AWS region named hideNsneak which is by default to the world. This security group should not be used for any other infrastructure.
+A default security group `hideNsneak` is made in all AWS regions that is full-open. All instances are configured with `iptables` to *only allow port 22/tcp* upon provisioning. 
 
-If there are issues dealing with existing resources causing you to not be able to deploy or destroy
-then cd into the terraform directory and run the following command for the resource that is giving the error
+If your program starts throwing terraform errors indicating a resource is not found, then you may need to remove the problematic terraform resources. You can do this by running the following:
 
-terraform state rm (resource name)
+`cd $GOPATH/src/github.com/rmikehodges/hideNsneak/terraform`
 
-This removes the resource from your state allowing you to proceed but cleanup of the resource must be done manually
+`terraform state rm <name of problem resource>`
 
+This resource will need to be cleaned up manually if it still exists.
 
 License 
 -------

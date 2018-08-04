@@ -1,25 +1,12 @@
-// Copyright © 2017 NAME HERE <EMAIL ADDRESS>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
 	"fmt"
-	"github.com/rmikehodges/hideNsneak/deployer"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/rmikehodges/hideNsneak/deployer"
 
 	"github.com/spf13/cobra"
 )
@@ -94,7 +81,7 @@ var collaboratorInstall = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 
 		fmt.Println("Next Steps:")
 
@@ -162,7 +149,7 @@ var cobaltStrikeInstall = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 	},
 }
 
@@ -212,7 +199,7 @@ var goPhishInstall = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 	},
 }
 
@@ -262,7 +249,7 @@ var letsEncryptInstall = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 	},
 }
 
@@ -312,7 +299,7 @@ var nmapInstall = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 	},
 }
 
@@ -362,7 +349,7 @@ var socatInstall = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 	},
 }
 
@@ -412,7 +399,7 @@ var sqlMapInstall = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 	},
 }
 
@@ -461,7 +448,7 @@ var sqlMapInstall = &cobra.Command{
 // 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 // 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-// 		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+// 		deployer.ExecAnsible("hosts.yml", "main.yml")
 // 	},
 // }
 

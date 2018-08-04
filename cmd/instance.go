@@ -1,17 +1,3 @@
-// Copyright © 2017 NAME HERE <EMAIL ADDRESS>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
@@ -53,7 +39,7 @@ var instanceDeploy = &cobra.Command{
 			return fmt.Errorf("invalid providers specified: %v", instanceProviders)
 		}
 		if deployer.ContainsString(instanceProviders, "DO") {
-			availableDORegions := deployer.GetDoRegions()
+			availableDORegions := deployer.GetDoRegions(cfgFile)
 			var unavailableRegions []string
 			for _, region := range regionDo {
 				if !deployer.ContainsString(availableDORegions, strings.ToLower(region)) {
@@ -75,13 +61,13 @@ var instanceDeploy = &cobra.Command{
 
 		oldList := deployer.ListInstances(marshalledState)
 
-		wrappers = deployer.InstanceDeploy(instanceProviders, regionAws, regionDo, regionAzure, regionGoogle, instanceCount, instancePrivateKey, instancePublicKey, "hidensneak", wrappers)
+		wrappers = deployer.InstanceDeploy(instanceProviders, regionAws, regionDo, regionAzure, regionGoogle, instanceCount, instancePrivateKey, instancePublicKey, "hidensneak", wrappers, cfgFile)
 
 		mainFile := deployer.CreateMasterFile(wrappers)
 
-		deployer.CreateTerraformMain(mainFile)
+		deployer.CreateTerraformMain(mainFile, cfgFile)
 
-		deployer.TerraformApply()
+		deployer.TerraformApply(cfgFile)
 
 		fmt.Println("Waiting for instances to initialize...")
 
@@ -111,7 +97,7 @@ var instanceDeploy = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 
 	},
 }
@@ -154,7 +140,7 @@ var instanceDestroy = &cobra.Command{
 
 		namesToDelete = append(namesToDelete, emptyEC2Modules...)
 
-		deployer.TerraformDestroy(namesToDelete)
+		deployer.TerraformDestroy(namesToDelete, cfgFile)
 		return
 	},
 }
