@@ -97,7 +97,7 @@ var instanceDeploy = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 
 	},
 }

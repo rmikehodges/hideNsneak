@@ -278,6 +278,14 @@ func InstanceDiff(instancesOld []ListStruct, instancesNew []ListStruct) (instanc
 //Ansible Functions
 /////////////////////
 
+// getAnsibleDirectory expands the filepath for the user
+func getAnsibleDirectory() (ansDirectory string) {
+	goPath := os.Getenv("GOPATH")
+	ansDirectory = goPath + "/src/github.com/rmikehodges/hideNsneak/ansible"
+
+	return
+}
+
 //GeneratePlaybookFile generates an ansible playbook
 func GeneratePlaybookFile(apps []string) string {
 	var playbookStruct ansiblePlaybook
@@ -348,7 +356,9 @@ func GenerateHostFile(instances []ListStruct, domain string, fqdn string, burpFi
 	return string(hostFile)
 }
 
-func ExecAnsible(hostsFile string, playbook string, filepath string) {
+func ExecAnsible(hostsFile string, playbook string) {
+	filepath := getAnsibleDirectory()
+
 	// var stdout, stderr bytes.Buffer
 	binary, err := exec.LookPath("ansible-playbook")
 
@@ -371,6 +381,14 @@ func ExecAnsible(hostsFile string, playbook string, filepath string) {
 /////////////////////
 //Terraform Functions
 /////////////////////
+
+// getTerraformDirectory expands the filepath for the user
+func getTerraformDirectory() (tfDirectory string) {
+	goPath := os.Getenv("GOPATH")
+	tfDirectory = goPath + "/src/github.com/rmikehodges/hideNsneak/terraform"
+
+	return
+}
 
 //Hack for backend config
 func execBashTerraform(args string, filepath string) string {
@@ -470,29 +488,30 @@ func InitializeTerraformFiles(configFile string) {
 //TerraformApply runs the init, plan, and apply commands for our
 //generated terraform templates
 func TerraformApply(configFile string) {
-
+	filepath := getTerraformDirectory()
 	config := createConfig(configFile)
 
 	//Initializing Terraform
 	args := "init -backend-config=\"access_key=" + config.AwsAccessID + "\" -backend-config=\"secret_key=" + config.AwsSecretKey + "\""
 
-	execBashTerraform(args, "terraform")
+	execBashTerraform(args, filepath)
 
 	//Applying Changes Identified in tfplan
 	fmt.Println("Applying Terraform Changes...")
 	argsSlice := []string{"apply", "-input=false", "-auto-approve"}
-	execTerraform(argsSlice, "terraform")
+
+	execTerraform(argsSlice, filepath)
 
 }
 
 func TerraformDestroy(nameList []string, configFile string) {
-
+	filepath := getTerraformDirectory()
 	config := createConfig(configFile)
 
 	//Initializing Terraform
 	args := "init -backend-config=\"access_key=" + config.AwsAccessID + "\" -backend-config=\"secret_key=" + config.AwsSecretKey + "\""
 
-	execBashTerraform(args, "terraform")
+	execBashTerraform(args, filepath)
 
 	argsSlice := []string{"destroy", "-auto-approve"}
 
@@ -501,15 +520,15 @@ func TerraformDestroy(nameList []string, configFile string) {
 	}
 	fmt.Println("Destroying Terraform Targets...")
 
-	execTerraform(argsSlice, "terraform")
+	execTerraform(argsSlice, filepath)
 }
 
 //TerraforrmOutputMarshaller runs the terraform output command
 //and marshalls the resulting JSON into a TerraformOutput struct
 func TerraformStateMarshaller() (outputStruct State) {
-
+	filepath := getTerraformDirectory()
 	args := []string{"state", "pull"}
-	output := execTerraform(args, "terraform")
+	output := execTerraform(args, filepath)
 
 	json.Unmarshal([]byte(output), &outputStruct)
 
@@ -523,7 +542,9 @@ func CreateTerraformMain(masterString string, configFile string) {
 	InitializeTerraformFiles(configFile)
 
 	//Opening Main.tf to append parsed template
-	mainFile, err := os.OpenFile("terraform/main.tf", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	filepath := getTerraformDirectory()
+	newFilePath := filepath + "/main.tf"
+	mainFile, err := os.OpenFile(newFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	checkErr(err)
 
 	//Writing the masterString to file. masterString was instantiated in master_list.go
@@ -1076,6 +1097,7 @@ func DomainFrontDeploy(provider string, origin string, restrictUA string,
 //the specified cloudfront due to the problems with terraforms destruction process
 func AWSCloudFrontDestroy(output DomainFrontOutput, configFile string) error {
 	config := createConfig(configFile)
+	filepath := getTerraformDirectory()
 
 	err := deleteCloudFront(output.ID, output.Etag, config.AwsAccessID, config.AwsSecretKey)
 	if err != nil {
@@ -1083,6 +1105,6 @@ func AWSCloudFrontDestroy(output DomainFrontOutput, configFile string) error {
 	}
 
 	args := []string{"state", "rm", output.Name}
-	execTerraform(args, "terraform")
+	execTerraform(args, filepath)
 	return nil
 }
