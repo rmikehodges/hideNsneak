@@ -1,9 +1,9 @@
 package deployer
 
-var filepath = getTerraformDirectory()
-var tfMainFile = filepath + "/main.tf"
-var tfVariablesFile = filepath + "/variables.tf"
-var tfVarsFile = filepath + "/terraform.tfvars"
+var tfFilepath = getTerraformDirectory()
+var tfMainFile = tfFilepath + "/main.tf"
+var tfVariablesFile = tfFilepath + "/variables.tf"
+var tfVarsFile = tfFilepath + "/terraform.tfvars"
 
 const backend = `terraform {
 	backend "s3" {
