@@ -1,4 +1,4 @@
-Welcome to hideNsneak. *Note: The official release of the tool is during Black Hat Arsenal this year, so this is WIP*
+Welcome to hideNsneak.
 ===============================
 ![Alt text](assets/logo.png "hideNsneak")
 This application assists in managing attack infrastructure for penetration testers by providing an interface to rapidly deploy, manage, and take down various cloud services. These include VMs, domain fronting, Cobalt Strike servers, API gateways, and firewalls.
