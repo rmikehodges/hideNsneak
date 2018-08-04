@@ -33,19 +33,19 @@ hideNsneak can:
 Running locally
 ---------------
 *A few disclosures for V 1.0:*
-* At this time, all hosts are assumed `Ubuntu 16.04 Linux`. In the future, we're hoping to add on a docker container to decrease initial setup time. 
+* At this time, all hosts are assumed `Ubuntu 16.04 Linux`. In the future, we're hoping to add on a docker container to decrease initial setup time
 * The only cloud providers currently setup are AWS and Digital Ocean
+* *You need to make sure that go is installed.* Instructions can be found [here](https://golang.org/dl/)
 
-1. Create a new AWS S3 bucket for your state
+1. Create a new AWS S3 bucket in `us-east-1`
 	- Ensure this is not public as it will hold your terraform state
 2. `go get github.com/rmikehodges/hideNsneak`
-3. `cd $GOPATH/src/rmikehodges/hideNsneak`
-4. run `./setup.sh`
+3. `cd $GOPATH/src/github.com/rmikehodges/hideNsneak`
+4. `./setup.sh`
 5. `cp config/example-config.json config/config.json` 
 	- fill in the values
 	- aws_access_id, aws_secret_key, aws_bucket_name are required at minimum
-6. `go build -o hidensneak main.go`
-7. now you can use the program by running `./hidensneak [command]`
+6. now you can use the program by running `./hidensneak [command]`
 
 Commands
 ---------

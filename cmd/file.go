@@ -48,7 +48,7 @@ var filePush = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 	},
 }
 
@@ -79,7 +79,7 @@ var filePull = &cobra.Command{
 		deployer.WriteToFile("ansible/hosts.yml", hostFile)
 		deployer.WriteToFile("ansible/main.yml", playbook)
 
-		deployer.ExecAnsible("hosts.yml", "main.yml", "ansible")
+		deployer.ExecAnsible("hosts.yml", "main.yml")
 	},
 }
 
