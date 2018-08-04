@@ -470,7 +470,7 @@ func InitializeTerraformFiles() {
 //generated terraform templates
 func TerraformApply() {
 
-	//Initializing Terraform
+	// Initializing Terraform
 	args := "init -backend-config=\"access_key=" + config.AwsAccessID + "\" -backend-config=\"secret_key=" + config.AwsSecretKey + "\""
 
 	execBashTerraform(args, "terraform")
