@@ -33,19 +33,15 @@
 - debug: msg="{{ cobaltstrike_pushed.stderr_lines }}"
   when: cobaltstrike_pushed is failed
 
-- name: start run cobalt strike 
-  shell: "( ( nohup ./teamserver {{ ansible_host }} {{ password }} {{ path_to_malleable_c2 | basename }} {{ cobaltstrike_kill_date }}) &)"
-  become: yes
-  async: 45
-  poll: 0
-  args:
-    chdir: /opt/cobaltstrike
-    executable: /bin/bash
-  register: cobaltstrike_ran
-  when:
-    - cobaltstrike_updated is succeeded
+  - name: start cobaltstrike in a screen session
+    command: screen -dmS Cobaltstrike /opt/cobaltstrike/teamserver {{ ansible_host }} {{ password }} {{ path_to_malleable_c2 | basename }} {{ cobaltstrike_kill_date }}
+    args:
+      chdir: /opt/cobaltstrike
+    register: cobaltstrike_ran
+    when:
+      - cobaltstrike_updated is succeeded
 
-- debug: msg="( nohup ./teamserver {{ ansible_host }} {{ password }} {{ path_to_malleable_c2 | basename}} {{ cobaltstrike_kill_date }} &)"
+- debug: msg="screen -dmS Cobaltstrike /opt/cobaltstrike/teamserver {{ ansible_host }} {{ password }} {{ path_to_malleable_c2 | basename }} {{ cobaltstrike_kill_date }}"
   when: cobaltstrike_ran is succeeded
 
 - debug: msg="Command Failed"

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"regexp"
 
 	"github.com/rmikehodges/hideNsneak/deployer"
 
@@ -24,7 +23,7 @@ var cobaltStrikePassword string
 var cobaltStrikeC2Path string
 var cobaltStrikeKillDate string
 
-var commandIndices []int
+var commandIndices string
 
 var exec = &cobra.Command{
 	Use:   "exec",
@@ -39,6 +38,23 @@ var command = &cobra.Command{
 	Use:   "command",
 	Short: "execute shell command",
 	Long:  `executes the specified shell command on the specifed remote server`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		err := deployer.IsValidNumberInput(commandIndices)
+
+		if err != nil {
+			return err
+		}
+
+		expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+
+		err = deployer.ValidateNumberOfInstances(expandedCommandIndex, "instance", cfgFile)
+
+		if err != nil {
+			return err
+		}
+
+		return err
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		apps := []string{"exec"}
 
@@ -50,11 +66,12 @@ var command = &cobra.Command{
 
 		var instances []deployer.ListStruct
 
-		for _, num := range commandIndices {
+		expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+		for _, num := range expandedCommandIndex {
 			instances = append(instances, list[num])
 		}
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -71,20 +88,21 @@ var nmap = &cobra.Command{
 	Short: "execute nmap",
 	Long:  `splits and distributes the nmap job between the specified hosts and optionally performs randomization of targets for evasion`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		_, err := deployer.ValidatePorts(nmapPorts)
-		if err != nil {
-			return err
-		}
-		_, err = deployer.ParseIPFile(nmapHostFile)
+		err := deployer.IsValidNumberInput(commandIndices)
+
 		if err != nil {
 			return err
 		}
 
-		err = deployer.ValidateNumberOfInstances(commandIndices, "instance", cfgFile)
+		expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+
+		err = deployer.ValidateNumberOfInstances(expandedCommandIndex, "instance", cfgFile)
+
 		if err != nil {
 			return err
 		}
-		return nil
+
+		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		apps := []string{"nmap", "nmap-exec"}
@@ -97,13 +115,14 @@ var nmap = &cobra.Command{
 
 		var instances []deployer.ListStruct
 
-		for _, num := range commandIndices {
+		expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+		for _, num := range expandedCommandIndex {
 			instances = append(instances, list[num])
 		}
 
 		nmapCommands := deployer.SplitNmapCommandsIntoHosts(nmapPorts, nmapHostFile, nmapCommand, len(instances), nmapEvasive)
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -120,7 +139,21 @@ var socatRedirect = &cobra.Command{
 	Short: "socat redirector",
 	Long:  "sets up a socat redirector on the specified port with the specifed target",
 	Args: func(cmd *cobra.Command, args []string) error {
-		return deployer.ValidateNumberOfInstances(commandIndices, "instance", cfgFile)
+		err := deployer.IsValidNumberInput(commandIndices)
+
+		if err != nil {
+			return err
+		}
+
+		expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+
+		err = deployer.ValidateNumberOfInstances(expandedCommandIndex, "instance", cfgFile)
+
+		if err != nil {
+			return err
+		}
+
+		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		apps := []string{"socat", "socat-exec"}
@@ -133,11 +166,12 @@ var socatRedirect = &cobra.Command{
 
 		var instances []deployer.ListStruct
 
-		for _, num := range commandIndices {
+		expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+		for _, num := range expandedCommandIndex {
 			instances = append(instances, list[num])
 		}
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -153,9 +187,23 @@ var socatRedirect = &cobra.Command{
 // 	Use:   "empire-run",
 // 	Short: "runs powershell empire",
 // 	Long:  `starts powershell empire in a screen session`,
-// 	Args: func(cmd *cobra.Command, args []string) error {
-// 		return deployer.ValidateNumberOfInstances(commandIndices)
-// 	},
+// Args: func(cmd *cobra.Command, args []string) error {
+// 	err := deployer.IsValidNumberInput(commandIndices)
+
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+
+// 	err = deployer.ValidateNumberOfInstances(expandedCommandIndex, "instance", cfgFile)
+
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	return err
+// },
 // 	Run: func(cmd *cobra.command, args []string) {
 // 		apps := []string{"empire", "empire-exec"}
 
@@ -167,11 +215,12 @@ var socatRedirect = &cobra.Command{
 
 // 		var instances []deployer.ListStruct
 
-// 		for _, num := range commandIndices {
+// expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+// for _, num := range expandedCommandIndex {
 // 			instances = append(instances, list[num])
 // 		}
 
-// 		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+// 		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 // 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 // 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 // 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -188,11 +237,20 @@ var cobaltStrikeRun = &cobra.Command{
 	Short: "updates and runs cobalt strike teamserver",
 	Long:  "updates the cobalt strike teamserver with the licensse and starts the teamserver with specified profile and password. if a cobalstrike tgz file is specified this command will also install cobalstrike before running it",
 	Args: func(cmd *cobra.Command, args []string) error {
-		match, _ := regexp.MatchString(`20[0-9]{2}\-[0=1]{1}[0-9]{1}\-[0-3]{1}[0-9]{1}`, cobaltStrikeKillDate)
-		if !match {
-			return fmt.Errorf("invalid kill date format, need YYYY-MM-DD")
+		err := deployer.IsValidNumberInput(commandIndices)
+
+		if err != nil {
+			return err
 		}
-		err := deployer.ValidateNumberOfInstances(commandIndices, "instance", cfgFile)
+
+		expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+
+		err = deployer.ValidateNumberOfInstances(expandedCommandIndex, "instance", cfgFile)
+
+		if err != nil {
+			return err
+		}
+
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
@@ -211,13 +269,14 @@ var cobaltStrikeRun = &cobra.Command{
 
 		var instances []deployer.ListStruct
 
-		for _, num := range commandIndices {
+		expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+		for _, num := range expandedCommandIndex {
 			instances = append(instances, list[num])
 		}
 
 		remoteFilePath = "/opt/cobaltstrike"
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -234,7 +293,20 @@ var collaboratorRun = &cobra.Command{
 	Short: "Starts burp collaborator server",
 	Long:  "Checks for burp collaborator installation, installs if it does not exist, and starts it",
 	Args: func(cmd *cobra.Command, args []string) error {
-		err := deployer.ValidateNumberOfInstances(commandIndices, "instance", cfgFile)
+		err := deployer.IsValidNumberInput(commandIndices)
+
+		if err != nil {
+			return err
+		}
+
+		expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+
+		err = deployer.ValidateNumberOfInstances(expandedCommandIndex, "instance", cfgFile)
+
+		if err != nil {
+			return err
+		}
+
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
@@ -258,13 +330,14 @@ var collaboratorRun = &cobra.Command{
 
 		var instances []deployer.ListStruct
 
-		for _, num := range commandIndices {
+		expandedCommandIndex := deployer.ExpandNumberInput(commandIndices)
+		for _, num := range expandedCommandIndex {
 			instances = append(instances, list[num])
 		}
 
 		fqdn = domain
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -285,28 +358,16 @@ var collaboratorRun = &cobra.Command{
 	},
 }
 
-// ---
-// # Starts up Cobalt Strike
-// cobaltstrike_license
-// public_ip
-// password
-// path_to_malleable_c2
-
-// ---
-// # Synchronize two directories on one remote host.
-// remote_absolute_path
-// host_absolute_path
-
 func init() {
 	rootCmd.AddCommand(exec)
 	exec.AddCommand(command, nmap, socatRedirect, cobaltStrikeRun, collaboratorRun /*, empireRun*/)
 
-	command.PersistentFlags().IntSliceVarP(&commandIndices, "id", "i", []int{}, "[Required] the id(s) for the remote server")
+	command.PersistentFlags().StringVarP(&commandIndices, "id", "i", "", "[Required] the id(s) for the remote server")
 	command.MarkFlagRequired("id")
 	command.PersistentFlags().StringVarP(&execCommand, "command", "c", "", "[Required] the command you want to execute on the remote server. must be encapsulated in quotes")
 	command.MarkPersistentFlagRequired("command")
 
-	nmap.PersistentFlags().IntSliceVarP(&commandIndices, "id", "i", []int{}, "[Required] the id(s) for the scanning servers")
+	nmap.PersistentFlags().StringVarP(&commandIndices, "id", "i", "", "[Required] the id(s) for the scanning servers")
 	nmap.MarkPersistentFlagRequired("id")
 	nmap.PersistentFlags().StringVarP(&nmapHostFile, "hostFile", "f", "", "[Required] the local filepath to the line seperated file containing the subnets and/or IP addresses")
 	nmap.MarkPersistentFlagRequired("hostFile")
@@ -318,14 +379,14 @@ func init() {
 	nmap.MarkPersistentFlagRequired("nmapOutput")
 	nmap.PersistentFlags().BoolVarP(&nmapEvasive, "nmapEvasion", "e", false, "[Optional] scan evasively. this will split up the job more randomly and take considerably longer. defaults to false")
 
-	socatRedirect.PersistentFlags().IntSliceVarP(&commandIndices, "id", "i", []int{}, "[Required] the id(s) for the remote server")
+	socatRedirect.PersistentFlags().StringVarP(&commandIndices, "id", "i", "", "[Required] the id(s) for the remote server")
 	socatRedirect.MarkFlagRequired("id")
 	socatRedirect.PersistentFlags().StringVarP(&socatPort, "port", "p", "", "[Required] the port you want to forward between your C2 server")
 	socatRedirect.MarkPersistentFlagRequired("port")
 	socatRedirect.PersistentFlags().StringVarP(&socatIP, "target", "t", "", "[Required] the ip address of your C2 server")
 	socatRedirect.MarkPersistentFlagRequired("target")
 
-	cobaltStrikeRun.PersistentFlags().IntSliceVarP(&commandIndices, "id", "i", []int{}, "[Required] the id for the remote server")
+	cobaltStrikeRun.PersistentFlags().StringVarP(&commandIndices, "id", "i", "", "[Required] the id for the remote server")
 	cobaltStrikeRun.MarkFlagRequired("id")
 	cobaltStrikeRun.PersistentFlags().StringVarP(&cobaltStrikeLicense, "license", "l", "", "[Required] cobaltstrike license")
 	cobaltStrikeRun.MarkPersistentFlagRequired("license")
@@ -337,11 +398,11 @@ func init() {
 	cobaltStrikeRun.PersistentFlags().StringVarP(&cobaltStrikeKillDate, "kill", "k", "", "[Required] kill date for cobaltstrike beacons YYYY-MM-DD i.e. 2018-08-08")
 	cobaltStrikeRun.MarkPersistentFlagRequired("kill")
 
-	collaboratorRun.PersistentFlags().IntSliceVarP(&commandIndices, "id", "i", []int{}, "[Required] the id for the install (Required)")
+	collaboratorRun.PersistentFlags().StringVarP(&commandIndices, "id", "i", "", "[Required] the id for the install (Required)")
 	collaboratorRun.MarkPersistentFlagRequired("id")
 	collaboratorRun.PersistentFlags().StringVarP(&domain, "domain", "d", "", "[Optional] domain for the burp collaborator install. use this option if you wish to install burp collaborator as well")
 	collaboratorRun.PersistentFlags().StringVarP(&burpFile, "burpFile", "b", "", "[Optional] local file path to the burp pro jar file. use this option if you wish to install burp collaborator as well")
 
-	// empireRun.PersistentFlags().IntSliceVarP(&commandIndices, "id", "i", []int{}, "Specify the id for the install (Required)")
+	// empireRun.PersistentFlags().StringVarP(&commandIndices, "id", "i", string, "Specify the id for the install (Required)")
 	// empireRun.MarkPersistentFlagRequired("id")
 }

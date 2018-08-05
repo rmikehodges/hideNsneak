@@ -1,101 +1,101 @@
+---
+ - name: Check for existing install
+    stat: path=/opt/gophish
+    become: yes
+    register: gophish_installed
+
+ - debug: msg="gophish is already installed"
+    when:
+      - gophish_installed.stat.exists
+
+
 - name: Deny everything and enable UFW
   become: yes
   ufw:
     state: enabled
     policy: deny
     direction: incoming
+  when:
+      - not gophish_installed.stat.exists
 
 - name: Allow TCP 22 for SSH.
   ufw:
     rule: allow
     port: 22
     proto: tcp
-
-- name: Allow TCP 80 for Gophish.
-  ufw:
-    rule: allow
-    port: 80
-    proto: tcp
+  when:
+      - not gophish_installed.stat.exists
 
 - name: Allow TCP 443 for Gophish.
   ufw:
     rule: allow
     port: 443
     proto: tcp
+  when:
+      - not gophish_installed.stat.exists
 
 - name: Update APT package cache.
   apt:
     update_cache: yes
+  when:
+      - not gophish_installed.stat.exists
 
 - name: Upgrade APT to the latest packages.
   apt:
     upgrade: safe
+  when:
+      - not gophish_installed.stat.exists
 
 - name: Install specified packages.
   apt:
     pkg: "{{ item }}"
     state: latest
   with_items: "{{ install_packages }}"
-
-- name: Update postfix main.cf configuration file.
-  template:
-    src: gophishconfig.jinja2
-    dest: /etc/postfix/main.cf
-    backup: yes
-    owner: root
-    group: root
-    mode: 0644
-
-- name: Restart postfix.
-  service:
-    name: postfix
-    state: restarted
-
-- name: Ensure postfix is started and enabled at boot.
-  service:
-    name: postfix
-    state: started
-    enabled: yes
+  when:
+      - not gophish_installed.stat.exists
 
 - name: Download latest Gophish .zip file.
   get_url:
     validate_certs: True
     url: https://getgophish.com/releases/latest/linux/64
-    dest: "/home/{{ gophish_user }}/gophish.zip"
+    dest: "/opt/gophish.zip"
     mode: 0755
-    owner: "{{ gophish_user }}"
-    group: "{{ gophish_user }}"
+  when:
+      - not gophish_installed.stat.exists
 
 - name: Create directory for gophish.
   file:
-    path: "/home/{{ gophish_user }}/gophish"
+    path: "/opt/gophish"
     state: directory
     mode: 0755
-    owner: "{{ gophish_user }}"
-    group: "{{ gophish_user }}"
+  when:
+      - not gophish_installed.stat.exists
 
 - name: Unzip gophish file.
   unarchive:
-    src: "/home/{{ gophish_user }}/gophish.zip"
-    dest: "/home/{{ gophish_user }}/gophish"
+    src: "/opt/gophish.zip"
+    dest: "/opt/gophish"
     remote_src: True  # File is on target server and not locally.
-    owner: "{{ gophish_user }}"
-    group: "{{ gophish_user }}"
+  when:
+      - not gophish_installed.stat.exists
 
 - name: Change ownership of Gophish folder and files.
   file:
-    path: /home/{{ gophish_user }}/gophish
-    owner: "{{ gophish_user }}"
-    group: "{{ gophish_user }}"
+    path: /opt/gophish
     recurse: True
+  when:
+      - not gophish_installed.stat.exists
 
 - name: Allow gophish binary to bind to privileged ports using setcap.
-  shell: setcap CAP_NET_BIND_SERVICE=+eip /home/{{ gophish_user }}/gophish/gophish
+  shell: setcap CAP_NET_BIND_SERVICE=+eip ~/gophish/gophish
+  when:
+      - not gophish_installed.stat.exists
 
-- name: Copy config.json file.
-  copy:
-    src: files/config.json
-    dest: "/home/{{ gophish_user }}/gophish/config.json"
-    owner: "{{ gophish_user }}"
-    group: "{{ gophish_user }}"
+- name: Create config.json file
+  template:
+    src: gophishconfig.jinja2
+    dest: "/opt/gophish/config.json"
     mode: 0644
+  when:
+      - not gophish_installed.stat.exists
+      

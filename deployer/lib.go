@@ -306,7 +306,7 @@ func GeneratePlaybookFile(apps []string) string {
 }
 
 //GenerateHostsFile generates an ansible host file
-func GenerateHostFile(instances []ListStruct, domain string, fqdn string, burpFile string,
+func GenerateHostFile(instances []ListStruct, domain string, burpFile string,
 	hostFilePath string, remoteFilePath string, execCommand string, socatPort string, socatIP string, nmapOutput string, nmapCommands map[int][]string,
 	cobaltStrikeLicense string, cobaltStrikePassword string, cobaltStrikeC2Path string, cobaltStrikeFile string, cobaltStrikeKillDate string,
 	ufwAction string, ufwTcpPort []string, ufwUdpPort []string) string {
@@ -319,7 +319,6 @@ func GenerateHostFile(instances []ListStruct, domain string, fqdn string, burpFi
 			AnsiblePrivateKey:     instance.PrivateKey,
 			AnsibleUser:           instance.Username,
 			AnsibleAdditionalOpts: "-o StrictHostKeyChecking=no",
-			AnsibleFQDN:           fqdn,
 			AnsibleDomain:         domain,
 			BurpFile:              burpFile,
 			HostAbsPath:           hostFilePath,

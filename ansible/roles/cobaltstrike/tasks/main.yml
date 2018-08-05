@@ -37,10 +37,11 @@
     - not cobaltstrike_installed.stat.exists
 
 - name: install java 1.8
-  apt:
-    pkg: oracle-java8-installer
-    update_cache: yes
+  apt: name={{ item }} state=installed
   become: yes
+  with_items:
+    - oracle-java8-installer
+    - openssl
   when:
     - not cobaltstrike_installed.stat.exists
 
@@ -50,3 +51,14 @@
   become: yes
   when:
     - not cobaltstrike_installed.stat.exists
+
+
+#TODO Implement CS automatic certificate provisionioning
+# - name: Checking if TLS certificates exist
+#   stat: path="{{ cert_path }}"
+#   register: tls_cert_present
+
+# - name: Generating PKCS12 Keystore
+
+#   when:
+#     - tls_cert_present

@@ -87,7 +87,7 @@ var instanceDeploy = &cobra.Command{
 		ufwTCPPorts = []string{"22"}
 		ufwAction = "add"
 
-		hostFile := deployer.GenerateHostFile(firewallList, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(firewallList, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
