@@ -40,7 +40,7 @@ var collaboratorInstall = &cobra.Command{
 
 		expandedInstallIndex := deployer.ExpandNumberInput(installIndex)
 
-		err = deployer.ValidateNumberOfInstances(expandedInstallIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedInstallIndex, "instance", cfgFile)
 
 		if err != nil {
 			return err
@@ -61,7 +61,7 @@ var collaboratorInstall = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -116,7 +116,7 @@ var cobaltStrikeInstall = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(installIndex)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 
 		if err != nil {
 			return err
@@ -131,7 +131,7 @@ var cobaltStrikeInstall = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -166,7 +166,7 @@ var goPhishInstall = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(installIndex)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 
 		if err != nil {
 			return err
@@ -181,7 +181,7 @@ var goPhishInstall = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -216,7 +216,7 @@ var letsEncryptInstall = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(installIndex)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 
 		if err != nil {
 			return err
@@ -231,7 +231,7 @@ var letsEncryptInstall = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -266,7 +266,7 @@ var nmapInstall = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(installIndex)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 
 		if err != nil {
 			return err
@@ -281,7 +281,7 @@ var nmapInstall = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -316,7 +316,7 @@ var socatInstall = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(installIndex)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 
 		if err != nil {
 			return err
@@ -331,7 +331,7 @@ var socatInstall = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -366,7 +366,7 @@ var sqlMapInstall = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(installIndex)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 
 		if err != nil {
 			return err
@@ -381,7 +381,7 @@ var sqlMapInstall = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -431,7 +431,7 @@ var sqlMapInstall = &cobra.Command{
 
 // 		masrshalledState := deployer.TerraformStateMarshaller()
 
-// 		list := deployer.ListInstances(marshalledState)
+// 		list := deployer.ListInstances(marshalledState, cfgFile)
 // 		var instances []deployer.ListStruct
 
 // expandedNumIndex := deployer.ExpandNumberInput(installIndex)

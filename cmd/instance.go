@@ -57,9 +57,9 @@ var instanceDeploy = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		marshalledState := deployer.TerraformStateMarshaller()
-		wrappers := deployer.CreateWrappersFromState(marshalledState)
+		wrappers := deployer.CreateWrappersFromState(marshalledState, cfgFile)
 
-		oldList := deployer.ListInstances(marshalledState)
+		oldList := deployer.ListInstances(marshalledState, cfgFile)
 
 		wrappers = deployer.InstanceDeploy(instanceProviders, regionAws, regionDo, regionAzure, regionGoogle, instanceCount, instancePrivateKey, instancePublicKey, "hidensneak", wrappers, cfgFile)
 
@@ -80,7 +80,7 @@ var instanceDeploy = &cobra.Command{
 		fmt.Println("Restricting Ports to only port 22...")
 
 		marshalledState = deployer.TerraformStateMarshaller()
-		newList := deployer.ListInstances(marshalledState)
+		newList := deployer.ListInstances(marshalledState, cfgFile)
 		firewallList := deployer.InstanceDiff(oldList, newList)
 
 		apps := []string{"firewall"}
@@ -115,7 +115,7 @@ var instanceDestroy = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(instanceDestroyIndices)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 
 		if err != nil {
 			return err
@@ -126,7 +126,7 @@ var instanceDestroy = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var namesToDelete []string
 
@@ -141,6 +141,7 @@ var instanceDestroy = &cobra.Command{
 		namesToDelete = append(namesToDelete, emptyEC2Modules...)
 
 		deployer.TerraformDestroy(namesToDelete, cfgFile)
+
 		return
 	},
 }
@@ -152,7 +153,7 @@ var instanceList = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		for index, item := range list {
 			fmt.Print(index)

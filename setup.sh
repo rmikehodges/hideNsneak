@@ -3,8 +3,6 @@ terraformPathDir="/usr/local/bin/"
 
 uname=$(uname | awk '{print tolower($0)}')
 terraformLink="https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_${uname}_amd64.zip"
-ansibleProviderLink="https://github.com/nbering/terraform-provider-ansible/releases/download/v0.0.4/terraform-provider-ansible-${uname}_amd64.zip"
-ansibleProviderFile="terraform-provider-ansible_v0.0.4"
 
 REQUIRED_COMMANDS=('unzip' 'python' 'pip' 'go')
 MISSING_COMMANDS=()
@@ -43,23 +41,6 @@ then
     curl -sLo /tmp/terraform_${uname}.zip $terraformLink; unzip /tmp/terraform_${uname}.zip -d /usr/local/bin/
 fi
 
-echo "Installing Ansible Provider...."
-if ! [ -f $HOME/.terraform.d/plugins/$ansibleProviderFile ]
-then
-    if ! [ -d $HOME/.terraform.d/plugins ]
-    then
-        mkdir -p $HOME/.terraform.d/plugins
-    fi
-
-    curl -sLo "$HOME/.terraform.d/plugins/$ansibleProviderFile.zip" $ansibleProviderLink
-    unzip "$HOME/.terraform.d/plugins/$ansibleProviderFile.zip" -d $HOME/.terraform.d/plugins/
-    rm "$HOME/.terraform.d/plugins/$ansibleProviderFile.zip"
-    mv $HOME/.terraform.d/plugins/*/$ansibleProviderFile $HOME/.terraform.d/plugins/
-    rm -r "$HOME/.terraform.d/plugins/${uname}_amd64"
-fi
-
-echo "Cleaning up provider files..."
-
 echo "Installing Ansible...."
 
 if ! exists "ansible"
@@ -69,9 +50,8 @@ then
     sudo pip install ansible
 fi
 
-echo "Grabbing Go dependencies"
-go get github.com/rmikehodges/hideNsneak/deployer
-go get github.com/rmikehodges/hideNsneak/cmd
+echo "Ensuring Go dependencies are met"
+go get github.com/rmikehodges/hideNsneak
 
 echo "Instantiating Backend DynamoDB Table"
 

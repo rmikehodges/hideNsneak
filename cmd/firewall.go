@@ -44,7 +44,7 @@ var firewallAdd = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(ufwIndices)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 		if err != nil {
 			return err
 		}
@@ -61,7 +61,7 @@ var firewallAdd = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -106,7 +106,7 @@ var firewallDelete = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(ufwIndices)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 		if err != nil {
 			return err
 		}
@@ -124,7 +124,7 @@ var firewallDelete = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -160,7 +160,7 @@ var firewallList = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(ufwIndices)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 		if err != nil {
 			return err
 		}
@@ -174,7 +174,7 @@ var firewallList = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 

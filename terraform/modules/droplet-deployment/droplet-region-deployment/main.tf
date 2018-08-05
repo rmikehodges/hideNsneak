@@ -1,20 +1,20 @@
-resource "ansible_host" "hideNsneak" {
-  count = "${var.do_count}"
+# resource "ansible_host" "hideNsneak" {
+#   count = "${var.do_count}"
 
-  //Element
-  inventory_hostname = "${digitalocean_droplet.hideNsneak.*.ipv4_address[count.index]}"
+#   //Element
+#   inventory_hostname = "${digitalocean_droplet.hideNsneak.*.ipv4_address[count.index]}"
 
-  //Possibly add groups in the future
-  # groups             = "${var.ansible_groups}"
+#   //Possibly add groups in the future
+#   # groups             = "${var.ansible_groups}"
 
-  vars {
-    ansible_user                 = "${var.do_default_user}"
-    ansible_connection           = "ssh"
-    ansible_ssh_private_key_file = "${var.do_private_key}"
-    ansible_ssh_common_args      = "-o StrictHostKeyChecking=no"
-  }
-  depends_on = ["digitalocean_droplet.hideNsneak"]
-}
+#   vars {
+#     ansible_user                 = "${var.do_default_user}"
+#     ansible_connection           = "ssh"
+#     ansible_ssh_private_key_file = "${var.do_private_key}"
+#     ansible_ssh_common_args      = "-o StrictHostKeyChecking=no"
+#   }
+#   depends_on = ["digitalocean_droplet.hideNsneak"]
+# }
 
 resource "digitalocean_droplet" "hideNsneak" {
   image  = "${var.do_image == "" ? "ubuntu-16-04-x64" : var.do_image}"

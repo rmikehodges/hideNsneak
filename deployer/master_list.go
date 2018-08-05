@@ -7,17 +7,6 @@ import (
 	"strings"
 )
 
-func retrieveUserAndPrivateKey(module ModuleState) (privateKey string, user string) {
-	for _, resource := range module.Resources {
-		if resource.Type == "ansible_host" {
-			privateKey = resource.Primary.Attributes["vars.ansible_ssh_private_key_file"].(string)
-			user = resource.Primary.Attributes["vars.ansible_user"].(string)
-			break
-		}
-	}
-	return
-}
-
 ////////////
 //AWS API///
 ////////////
@@ -124,8 +113,9 @@ func createCloudfrontFromState(modules []ModuleState) (cloudfrontConfigWrappers 
 ////////////
 //EC2///////
 ////////////
-func returnInitialEC2Config(module ModuleState) (tempConfig EC2ConfigWrapper) {
-	privateKey, user := retrieveUserAndPrivateKey(module)
+func returnInitialEC2Config(module ModuleState, configFile string) (tempConfig EC2ConfigWrapper) {
+	config := createConfig(configFile)
+	privateKey, user := config.PrivateKey, config.EC2User
 
 	tempConfig.RegionMap = make(map[string]int)
 	for _, resource := range module.Resources {
@@ -144,7 +134,10 @@ func returnInitialEC2Config(module ModuleState) (tempConfig EC2ConfigWrapper) {
 	return
 }
 
-func createEC2ConfigFromState(modules []ModuleState) (ec2Configs []EC2ConfigWrapper, maxModuleCount int) {
+func createEC2ConfigFromState(modules []ModuleState, configFile string) (ec2Configs []EC2ConfigWrapper, maxModuleCount int) {
+	config := createConfig(configFile)
+	privateKey, user := config.PrivateKey, config.EC2User
+
 	for _, module := range modules {
 		if len(module.Path) > 2 && len(module.Resources) != 0 && strings.Contains(module.Path[1], "ec2Deploy") {
 			for _, resource := range module.Resources {
@@ -159,10 +152,8 @@ func createEC2ConfigFromState(modules []ModuleState) (ec2Configs []EC2ConfigWrap
 					}
 					//If the list is empty, return the first element found
 					if len(ec2Configs) == 0 {
-						ec2Configs = append(ec2Configs, returnInitialEC2Config(module))
+						ec2Configs = append(ec2Configs, returnInitialEC2Config(module, configFile))
 					} else {
-						privateKey, user := retrieveUserAndPrivateKey(module)
-
 						tempConfig := EC2ConfigWrapper{
 							ModuleName:   module.Path[1],
 							KeyPairName:  resource.Primary.Attributes["key_name"].(string),
@@ -198,8 +189,9 @@ func createEC2ConfigFromState(modules []ModuleState) (ec2Configs []EC2ConfigWrap
 //////////////
 //DigitalOcean
 /////////////
-func returnInitialDOConfig(module ModuleState) (tempConfig DOConfigWrapper) {
-	privateKey, user := retrieveUserAndPrivateKey(module)
+func returnInitialDOConfig(module ModuleState, configFile string) (tempConfig DOConfigWrapper) {
+	config := createConfig(configFile)
+	privateKey, user := config.PrivateKey, config.DOUser
 
 	for _, resource := range module.Resources {
 		if resource.Type == "digitalocean_droplet" {
@@ -217,7 +209,10 @@ func returnInitialDOConfig(module ModuleState) (tempConfig DOConfigWrapper) {
 	return
 }
 
-func createDOConfigFromState(modules []ModuleState) (doConfigs []DOConfigWrapper, maxModuleCount int) {
+func createDOConfigFromState(modules []ModuleState, configFile string) (doConfigs []DOConfigWrapper, maxModuleCount int) {
+	config := createConfig(configFile)
+	privateKey, user := config.PrivateKey, config.DOUser
+
 	for _, module := range modules {
 		if len(module.Path) > 2 && len(module.Resources) != 0 && strings.Contains(module.Path[1], "doDropletDeploy") {
 			for _, resource := range module.Resources {
@@ -229,9 +224,8 @@ func createDOConfigFromState(modules []ModuleState) (doConfigs []DOConfigWrapper
 					}
 					//If the list is empty, return the first element found
 					if len(doConfigs) == 0 {
-						doConfigs = append(doConfigs, returnInitialDOConfig(module))
+						doConfigs = append(doConfigs, returnInitialDOConfig(module, configFile))
 					} else {
-						privateKey, user := retrieveUserAndPrivateKey(module)
 						tempConfig := DOConfigWrapper{
 							ModuleName:  module.Path[1],
 							Image:       resource.Primary.Attributes["image"].(string),
@@ -312,7 +306,9 @@ func CheckForEmptyEC2Module(namesToDelete []string, state State) (names []string
 		if len(module.Path) > 2 && strings.Contains(module.Path[1], "ec2Deploy") {
 			for _, instance := range namesToDelete {
 				instanceSlice := strings.Split(instance, ".")
-				regions[instanceSlice[3]] = regions[instanceSlice[3]] - 1
+				if instanceSlice[3] == module.Path[2] {
+					regions[instanceSlice[3]] = regions[instanceSlice[3]] - 1
+				}
 			}
 			for name, index := range regions {
 				if index == 0 {
@@ -325,9 +321,9 @@ func CheckForEmptyEC2Module(namesToDelete []string, state State) (names []string
 	return
 }
 
-func CreateWrappersFromState(state State) (wrappers ConfigWrappers) {
-	wrappers.DO, wrappers.DropletModuleCount = createDOConfigFromState(state.Modules)
-	wrappers.EC2, wrappers.EC2ModuleCount = createEC2ConfigFromState(state.Modules)
+func CreateWrappersFromState(state State, configFile string) (wrappers ConfigWrappers) {
+	wrappers.DO, wrappers.DropletModuleCount = createDOConfigFromState(state.Modules, configFile)
+	wrappers.EC2, wrappers.EC2ModuleCount = createEC2ConfigFromState(state.Modules, configFile)
 	wrappers.AWSAPI, wrappers.AWSAPIModuleCount = createAWSAPIFromState(state.Modules)
 	wrappers.Cloudfront, wrappers.CloudfrontModuleCount = createCloudfrontFromState(state.Modules)
 	wrappers.Googlefront, wrappers.GooglefrontModuleCount = createGooglefrontFromState(state.Modules)

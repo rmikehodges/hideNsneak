@@ -10,7 +10,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"os/user"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -216,12 +215,12 @@ func WriteToFile(path string, content string) {
 }
 
 //ValidateNumberOfInstances makes sure that the number input is actually available in our list of active instances
-func ValidateNumberOfInstances(numberInput []int, listType string) error {
+func ValidateNumberOfInstances(numberInput []int, listType string, configFile string) error {
 	marshalledState := TerraformStateMarshaller()
 
 	switch listType {
 	case "instance":
-		list := ListInstances(marshalledState)
+		list := ListInstances(marshalledState, configFile)
 		largestInstanceNum := FindLargestNumber(numberInput)
 
 		//make sure the largestInstanceNumToInstall is not bigger than totalInstancesAvailable
@@ -314,16 +313,11 @@ func GenerateHostFile(instances []ListStruct, domain string, fqdn string, burpFi
 	ufwAction string, ufwTcpPort []string, ufwUdpPort []string) string {
 	var inventory ansibleInventory
 
-	usr, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	inventory.All.Hosts = make(map[string]ansibleHost)
 	for index, instance := range instances {
 		inventory.All.Hosts[instance.IP] = ansibleHost{
 			AnsibleHost:           instance.IP,
-			AnsiblePrivateKey:     usr.HomeDir + "/.ssh/" + instance.PrivateKey,
+			AnsiblePrivateKey:     instance.PrivateKey,
 			AnsibleUser:           instance.Username,
 			AnsibleAdditionalOpts: "-o StrictHostKeyChecking=no",
 			AnsibleFQDN:           fqdn,
@@ -656,7 +650,7 @@ func DestroySOCKS(ip string) {
 //createSingleSOCKS initiates a SOCKS Proxy on the local host with the specifed ipv4 address
 func CreateSingleSOCKS(privateKey string, username string, ipv4 string, port int) (err error) {
 	portString := strconv.Itoa(port)
-	args := []string{"-D", portString, "-o", "StrictHostKeyChecking=no", "-N", "-f", "-i", os.Getenv("HOME") + "/.ssh/" + privateKey, username + "@" + ipv4}
+	args := []string{"-D", portString, "-o", "StrictHostKeyChecking=no", "-N", "-f", "-i", privateKey, username + "@" + ipv4}
 	cmd := exec.Command("ssh", args...)
 	err = cmd.Start()
 	if err != nil {
@@ -783,12 +777,15 @@ func ListAPIs(state State) (apiOutputs []APIOutput) {
 	return
 }
 
-func ListInstances(state State) (hostOutput []ListStruct) {
+func ListInstances(state State, configFile string) (hostOutput []ListStruct) {
+	config := createConfig(configFile)
+
+	privateKey := config.PrivateKey
+
 	for _, module := range state.Modules {
 		if len(module.Resources) != 0 {
 			var tempOutput []ListStruct
 			if len(module.Path) > 1 {
-				privatekey, username := retrieveUserAndPrivateKey(module)
 
 				for name, resource := range module.Resources {
 					fullName := "module." + strings.Join(module.Path[1:], ".module.") + "." + name
@@ -811,8 +808,8 @@ func ListInstances(state State) (hostOutput []ListStruct) {
 							Region:     resource.Primary.Attributes["region"].(string),
 							Name:       fullName,
 							Place:      count,
-							PrivateKey: privatekey,
-							Username:   username,
+							PrivateKey: privateKey,
+							Username:   config.DOUser,
 						})
 					case "aws_instance":
 						tempOutput = append(tempOutput, ListStruct{
@@ -821,8 +818,8 @@ func ListInstances(state State) (hostOutput []ListStruct) {
 							Region:     resource.Primary.Attributes["availability_zone"].(string),
 							Name:       fullName,
 							Place:      count,
-							PrivateKey: privatekey,
-							Username:   username,
+							PrivateKey: privateKey,
+							Username:   config.EC2User,
 						})
 					default:
 						continue

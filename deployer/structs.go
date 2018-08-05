@@ -14,4 +14,7 @@ type configStruct struct {
 	GoogleProject         string `json:"google_project_id"`
 	PublicKey             string `json:"public_key"`
 	PrivateKey            string `json:"private_key"`
+	DOUser                string `json:"do_user"`
+	EC2User               string `json:"ec2_user"`
+	GoogleUser            string `json:"google_user"`
 }

@@ -44,8 +44,8 @@ Running locally
 4. `./setup.sh`
 5. `cp config/example-config.json config/config.json` 
 	- fill in the values
-	- aws_access_id, aws_secret_key, aws_bucket_name are required at minimum
-  - all operators working on the same state must have config values filled in all the same fields. i.e. do_token can have 2 different tokens, but needs to be filled in on both ends for the same account.
+	- aws_access_id, aws_secret_key, aws_bucket_name, public_key, private_key, ec2_user, and do_user are required at minimum
+  - all operators working on the same state must have config values filled in all the same fields
 6. now you can use the program by running `./hidensneak [command]`
 
 Commands
