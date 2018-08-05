@@ -170,8 +170,12 @@ type DomainFrontOutput struct {
 
 func (output DomainFrontOutput) String() string {
 	if output.Provider == "GOOGLE" {
-		origin := strings.Replace(output.Origin, "-", ".", -1)
-		return " - Origin: " + origin + " - Invoke: " + output.Invoke + " - Status: " + output.Status + " - RestrictedUA: " + output.RestrictUA + " - Provider: " + output.Provider
+		origin := strings.Replace(output.Origin, "_", ".", -1)
+		restrictedUA := output.RestrictUA
+		if output.RestrictUA == "" {
+			restrictedUA = "N/A"
+		}
+		return " - Origin: " + origin + " - Invoke: " + output.Invoke + " - Status: " + output.Status + " - RestrictedUA: " + restrictedUA + " - Provider: " + output.Provider
 	}
 	return " - Origin: " + output.Origin + " - Invoke: " + output.Invoke + " - Status: " + output.Status + " - Provider: " + output.Provider
 }

@@ -11,7 +11,7 @@ type configStruct struct {
 	AzureLocation         string `json:"azure_location"`
 	AzureSubscriptionID   string `json:"azure_subscription_id"`
 	GoogleCredentialsPath string `json:"google_credentials_path"`
-	GoogleProject         string `json:"google_project"`
+	GoogleProject         string `json:"google_project_id"`
 	PublicKey             string `json:"public_key"`
 	PrivateKey            string `json:"private_key"`
 }

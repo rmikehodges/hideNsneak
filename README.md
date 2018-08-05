@@ -45,6 +45,7 @@ Running locally
 5. `cp config/example-config.json config/config.json` 
 	- fill in the values
 	- aws_access_id, aws_secret_key, aws_bucket_name are required at minimum
+  - all operators working on the same state must have config values filled in all the same fields. i.e. do_token can have 2 different tokens, but needs to be filled in on both ends for the same account.
 6. now you can use the program by running `./hidensneak [command]`
 
 Commands
@@ -109,6 +110,14 @@ Contributions
 -------------
 We would love to have you contribute to hideNsneak. Feel free to pull the repo and start contributing, we will review pull requests as we receive them. If you feel like some things need improvement or some features need adding, feel free to open up an issue and hopefully -- someone will pick it up. 
 
+IAM Permissions
+-------------
+Google Domain Fronting
+* App Engine API Enabled
+* Cloud Functions API Enabled
+* Project editor or higher permissions
+
+
 Miscellaneous
 -------------
 A default security group `hideNsneak` is made in all AWS regions that is full-open. All instances are configured with `iptables` to *only allow port 22/tcp* upon provisioning. 
@@ -120,6 +129,15 @@ If your program starts throwing terraform errors indicating a resource is not fo
 `terraform state rm <name of problem resource>`
 
 This resource will need to be cleaned up manually if it still exists.
+
+Troubleshooting
+---------------
+
+Error: configuration for `module name here` is not present; a provider configuration block is required for all operations
+
+This is usually due to artifacts being left in the state from old deployments. Below are instructions on how to remove those artifacts from your state. If they are live resources, they will need to be manually destroyed via the cloud provider's administration panel.
+* `cd $GOPATH/src/github.com/rmikehodges/hideNsneak/terraform`
+* `terraform state rm <module or resource name>`
 
 License 
 -------
