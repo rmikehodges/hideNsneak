@@ -10,7 +10,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -835,16 +834,11 @@ func ListInstances(state State, configFile string) (hostOutput []ListStruct) {
 //InstanceDeploy takes input from the user interface in order to divide and deploy appropriate regions
 //it takes in a TerraformOutput struct, makes the appropriate edits, and returns that same struct
 func InstanceDeploy(providers []string, awsRegions []string, doRegions []string, azureRegions []string,
-	googleRegions []string, count int, privKey string, pubKey string, keyName string, wrappers ConfigWrappers, configFile string) ConfigWrappers {
+	googleRegions []string, count int, keyName string, wrappers ConfigWrappers, configFile string) ConfigWrappers {
 
 	config := createConfig(configFile)
 	doModuleCount := wrappers.DropletModuleCount
 	awsModuleCount := wrappers.EC2ModuleCount
-
-	//Strip Directories from key name
-	//Identical Keypairs must be named the same
-	shortPrivKey := filepath.Base(privKey)
-	shortPubKey := filepath.Base(pubKey)
 
 	//Gather the count per provider and the remainder
 	countPerProvider := count / len(providers)
@@ -876,7 +870,7 @@ func InstanceDeploy(providers []string, awsRegions []string, doRegions []string,
 					result := checkEC2KeyExistence(config.AwsSecretKey, config.AwsAccessID, region, keyName)
 
 					if !result {
-						publicKeyBytes, err := ioutil.ReadFile(pubKey)
+						publicKeyBytes, err := ioutil.ReadFile(config.PublicKey)
 						if err != nil {
 							fmt.Printf("Error reading public key: %s", err)
 						}
@@ -898,8 +892,8 @@ func InstanceDeploy(providers []string, awsRegions []string, doRegions []string,
 
 					newEC2RegionConfig := EC2ConfigWrapper{
 						InstanceType: "t2.micro",
-						PrivateKey:   shortPrivKey,
-						PublicKey:    shortPubKey,
+						PrivateKey:   config.PrivateKey,
+						PublicKey:    config.PublicKey,
 						KeyPairName:  keyName,
 						DefaultUser:  "ubuntu",
 						RegionMap:    make(map[string]int),
@@ -951,8 +945,8 @@ func InstanceDeploy(providers []string, awsRegions []string, doRegions []string,
 				if regionCount > 0 {
 					newDORegionConfig := DOConfigWrapper{
 						Image:       "ubuntu-16-04-x64",
-						PrivateKey:  shortPrivKey,
-						Fingerprint: genDOKeyFingerprint(pubKey),
+						PrivateKey:  config.PrivateKey,
+						Fingerprint: genDOKeyFingerprint(config.PublicKey),
 						Size:        "512mb",
 						DefaultUser: "root",
 						RegionMap:   make(map[string]int),

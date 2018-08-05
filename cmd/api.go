@@ -88,7 +88,7 @@ var apiDestroy = &cobra.Command{
 
 		var namesToDelete []string
 
-		expandedNumIndex := deployer.ExpandNumberInput(instanceDestroyIndices)
+		expandedNumIndex := deployer.ExpandNumberInput(apiIndices)
 
 		for _, numIndex := range expandedNumIndex {
 			namesToDelete = append(namesToDelete, list[numIndex].Name)
