@@ -105,11 +105,6 @@ Organization
 * `_deployer` --> backend commands and structs
 * `main.go` --> where the magic happens 
 
-
-Contributions
--------------
-We would love to have you contribute to hideNsneak. Feel free to pull the repo and start contributing, we will review pull requests as we receive them. If you feel like some things need improvement or some features need adding, feel free to open up an issue and hopefully -- someone will pick it up. 
-
 IAM Permissions
 -------------
 Google Domain Fronting
@@ -138,6 +133,12 @@ Error: configuration for `module name here` is not present; a provider configura
 This is usually due to artifacts being left in the state from old deployments. Below are instructions on how to remove those artifacts from your state. If they are live resources, they will need to be manually destroyed via the cloud provider's administration panel.
 * `cd $GOPATH/src/github.com/rmikehodges/hideNsneak/terraform`
 * `terraform state rm <module or resource name>`
+
+
+Contributions
+-------------
+We would love to have you contribute to hideNsneak. Feel free to pull the repo and start contributing, we will review pull requests as we receive them. If you feel like some things need improvement or some features need adding, feel free to open up an issue and hopefully -- someone will pick it up. 
+
 
 License 
 -------
