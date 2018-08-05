@@ -15,7 +15,6 @@ import (
 func compareDOConfig(instanceOne DOConfigWrapper, instanceTwo DOConfigWrapper) bool {
 	if instanceOne.Image == instanceTwo.Image &&
 		instanceOne.Fingerprint == instanceTwo.Fingerprint &&
-		instanceOne.PrivateKey == instanceTwo.PrivateKey &&
 		instanceOne.Size == instanceTwo.Size &&
 		instanceOne.DefaultUser == instanceTwo.DefaultUser {
 		return true

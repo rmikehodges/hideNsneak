@@ -12,8 +12,6 @@ import (
 )
 
 var instanceProviders []string
-var instancePrivateKey string
-var instancePublicKey string
 var instanceCount int
 var regionAws []string
 var regionDo []string
@@ -61,7 +59,7 @@ var instanceDeploy = &cobra.Command{
 
 		oldList := deployer.ListInstances(marshalledState, cfgFile)
 
-		wrappers = deployer.InstanceDeploy(instanceProviders, regionAws, regionDo, regionAzure, regionGoogle, instanceCount, instancePrivateKey, instancePublicKey, "hidensneak", wrappers, cfgFile)
+		wrappers = deployer.InstanceDeploy(instanceProviders, regionAws, regionDo, regionAzure, regionGoogle, instanceCount, "hidensneak", wrappers, cfgFile)
 
 		mainFile := deployer.CreateMasterFile(wrappers)
 
@@ -171,12 +169,6 @@ func init() {
 
 	instanceDeploy.PersistentFlags().IntVarP(&instanceCount, "count", "c", 0, "[Required] number of instances to deploy")
 	instanceDeploy.MarkPersistentFlagRequired("count")
-
-	instanceDeploy.PersistentFlags().StringVarP(&instancePrivateKey, "privatekey", "v", "", "[Required] local file path to private ssh key to connect to instance")
-	instanceDeploy.MarkPersistentFlagRequired("privatekey")
-
-	instanceDeploy.PersistentFlags().StringVarP(&instancePublicKey, "publickey", "b", "", "[Required] local file path to the public key corresponding to the specified private key")
-	instanceDeploy.MarkPersistentFlagRequired("publickey")
 
 	instanceDestroy.PersistentFlags().StringVarP(&instanceDestroyIndices, "input", "i", "", "[Required] indices of instances to destroy")
 	instanceDestroy.MarkPersistentFlagRequired("input")
