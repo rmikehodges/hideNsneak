@@ -73,7 +73,7 @@ var collaboratorInstall = &cobra.Command{
 
 		fqdn = domain
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -141,7 +141,7 @@ var cobaltStrikeInstall = &cobra.Command{
 			instances = append(instances, list[num])
 		}
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -175,7 +175,7 @@ var goPhishInstall = &cobra.Command{
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		apps := []string{"gophish"}
+		apps := []string{"letsencrypt", "gophish"}
 
 		playbook := deployer.GeneratePlaybookFile(apps)
 
@@ -191,7 +191,7 @@ var goPhishInstall = &cobra.Command{
 			instances = append(instances, list[num])
 		}
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -241,7 +241,7 @@ var letsEncryptInstall = &cobra.Command{
 			instances = append(instances, list[num])
 		}
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -291,7 +291,7 @@ var nmapInstall = &cobra.Command{
 			instances = append(instances, list[num])
 		}
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -341,7 +341,7 @@ var socatInstall = &cobra.Command{
 			instances = append(instances, list[num])
 		}
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -391,7 +391,7 @@ var sqlMapInstall = &cobra.Command{
 			instances = append(instances, list[num])
 		}
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -440,7 +440,7 @@ var empireInstall = &cobra.Command{
 			instances = append(instances, list[num])
 		}
 
-		hostFile := deployer.GenerateHostFile(instances, fqdn, domain, burpFile, localFilePath, remoteFilePath,
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
 			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
 			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
 			ufwAction, ufwTCPPorts, ufwUDPPorts)
@@ -471,13 +471,11 @@ func init() {
 
 	goPhishInstall.PersistentFlags().StringVarP(&installIndex, "id", "i", "", "[Required] the id for the install")
 	goPhishInstall.MarkFlagRequired("id")
-	goPhishInstall.PersistentFlags().StringVarP(&domain, "domain", "d", "", "[Optional] the domain for the gophish server")
+	goPhishInstall.PersistentFlags().StringVarP(&domain, "domain", "d", "", "[Required] the domain for the gophish server")
+	goPhishInstall.MarkFlagRequired("domain")
 
 	letsEncryptInstall.PersistentFlags().StringVarP(&installIndex, "id", "i", "", "[Required] the id for the install")
 	letsEncryptInstall.MarkFlagRequired("id")
-	//TODO Check this and how it applies to letsencrypt
-	letsEncryptInstall.PersistentFlags().StringVarP(&fqdn, "fqdn", "f", "", "[Required] the fqdn of the server to generate a certificate for")
-	letsEncryptInstall.MarkPersistentFlagRequired("fqdn")
 	letsEncryptInstall.PersistentFlags().StringVarP(&domain, "domain", "d", "", "[Required] the domain of the server to generate a certificate for")
 	letsEncryptInstall.MarkPersistentFlagRequired("domain")
 

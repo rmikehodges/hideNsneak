@@ -41,7 +41,6 @@ type ansibleHost struct {
 	AnsibleUser           string   `yaml:"ansible_user"`
 	AnsiblePrivateKey     string   `yaml:"ansible_ssh_private_key_file"`
 	AnsibleAdditionalOpts string   `yaml:"ansible_ssh_common_args"`
-	AnsibleFQDN           string   `yaml:"ansible_fqdn"`
 	AnsibleDomain         string   `yaml:"ansible_domain_name"`
 	BurpFile              string   `yaml:"burp_file"`
 	HostAbsPath           string   `yaml:"host_absolute_path"`
@@ -59,4 +58,6 @@ type ansibleHost struct {
 	UfwAction             string   `yaml:"ufw_action"`
 	UfwTCPPort            []string `yaml:"ufw_tcp_port"`
 	UfwUDPPort            []string `yaml:"ufw_udp_port"`
+	KeyPath               string   `yaml:"key_path"`
+	CertPath              string   `yaml:"cert_path"`
 }

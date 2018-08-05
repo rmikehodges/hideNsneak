@@ -1,13 +1,6 @@
 enable_ufw_firewall: true
 
 install_packages:
-  - postfix
   - unzip
 
-hostname: gophish
-gophish_user: ubuntu
-postfix_hostname: gophish
-postfix_inet_interfaces: 127.0.0.1
 
-# Required if changing /etc/hostname to something different.
-reboot_box: true
