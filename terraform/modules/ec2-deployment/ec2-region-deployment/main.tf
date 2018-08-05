@@ -63,17 +63,3 @@ resource "aws_instance" "hideNsneak" {
 
   depends_on = ["data.aws_ami.ubuntu", "data.aws_vpc.default", "data.aws_subnet_ids.all"]
 }
-
-# resource "ansible_host" "hideNsneak" {
-#   count = "${var.instance_count}"
-
-#   inventory_hostname = "${local.ipList[count.index]}"
-#   groups             = "${var.ansible_groups}"
-
-#   vars {
-#     ansible_user                 = "${var.ec2_default_user}"
-#     ansible_connection           = "ssh"
-#     ansible_ssh_private_key_file = "${var.aws_private_key_file}"
-#     ansible_ssh_common_args      = "-o StrictHostKeyChecking=no"
-#   }
-# }

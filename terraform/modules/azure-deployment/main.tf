@@ -15,24 +15,6 @@ resource "random_string" "net_name" {
   special = false
 }
 
-# resource "ansible_host" "hideNsneak" {
-#   count = "${var.azure_instance_count}"
-
-#   //Element
-#   inventory_hostname = "${azurerm_public_ip.public_ip.*.ip_address[count.index]}"
-#   groups             = "${var.ansible_groups}"
-
-#   vars {
-#     ansible_user       = "${var.azure_default_username}"
-#     ansible_connection = "ssh"
-
-#     ansible_ssh_private_key_file = "${var.azure_private_key_file}"
-#     ansible_ssh_common_args      = "-o StrictHostKeyChecking=no"
-#   }
-
-#   depends_on = ["azure_virtual_machine.hideNsneak"]
-# }
-
 //TODO: Resource group may not need to be created with each module
 resource "azurerm_resource_group" "hideNsneak" {
   name     = "hideNsneak${random_string.resource_group_name.result}"
