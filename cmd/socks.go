@@ -35,7 +35,7 @@ var socksDeploy = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(socksInstanceInput)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 
 		if err != nil {
 			return err
@@ -46,7 +46,7 @@ var socksDeploy = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		expandedNumIndex := deployer.ExpandNumberInput(socksInstanceInput)
 
@@ -74,7 +74,7 @@ var socksDestroy = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(socksInstanceInput)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
 
 		if err != nil {
 			return err
@@ -85,7 +85,7 @@ var socksDestroy = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		expandedNumIndex := deployer.ExpandNumberInput(socksInstanceInput)
 
@@ -104,7 +104,7 @@ var socksList = &cobra.Command{
 		fmt.Println("Pulling Terraform State...")
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		output := deployer.ListProxies(list)
 
@@ -119,7 +119,7 @@ var proxychains = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		output := deployer.ListProxies(list)
 
@@ -134,7 +134,7 @@ var socksd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		output := deployer.ListProxies(list)
 

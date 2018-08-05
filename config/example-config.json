@@ -11,5 +11,8 @@
     "google_credentials_path": "",
     "google_project": "",
     "public_key":"",
-    "private_key":""
+    "private_key":"",
+    "do_user": "root",
+    "ec2_user": "ubuntu",
+    "google_user": "ubuntu"
 }

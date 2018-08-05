@@ -47,7 +47,7 @@ var apiDeploy = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		marshalledState := deployer.TerraformStateMarshaller()
-		wrappers := deployer.CreateWrappersFromState(marshalledState)
+		wrappers := deployer.CreateWrappersFromState(marshalledState, cfgFile)
 
 		apiProvider = strings.ToUpper(apiProvider)
 
@@ -74,7 +74,7 @@ var apiDestroy = &cobra.Command{
 
 		expandedNumIndex := deployer.ExpandNumberInput(apiIndices)
 
-		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "api")
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "api", cfgFile)
 
 		if err != nil {
 			return err

@@ -52,7 +52,7 @@ var domainFrontDeploy = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		domainFrontProvider = strings.ToUpper(domainFrontProvider)
 		marshalledState := deployer.TerraformStateMarshaller()
-		wrappers := deployer.CreateWrappersFromState(marshalledState)
+		wrappers := deployer.CreateWrappersFromState(marshalledState, cfgFile)
 		wrappers = deployer.DomainFrontDeploy(domainFrontProvider, domainFrontOrigin,
 			restrictUA, functionName, frontedDomain, wrappers)
 
@@ -118,7 +118,7 @@ var domainFrontDisable = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		marshalledState := deployer.TerraformStateMarshaller()
 		list := deployer.ListDomainFronts(marshalledState)
-		wrappers := deployer.CreateWrappersFromState(marshalledState)
+		wrappers := deployer.CreateWrappersFromState(marshalledState, cfgFile)
 		switch list[domainFrontIndex].Provider {
 		case "AWS":
 			for index, front := range wrappers.Cloudfront {
@@ -170,7 +170,7 @@ var domainFrontEnable = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		marshalledState := deployer.TerraformStateMarshaller()
 		list := deployer.ListDomainFronts(marshalledState)
-		wrappers := deployer.CreateWrappersFromState(marshalledState)
+		wrappers := deployer.CreateWrappersFromState(marshalledState, cfgFile)
 
 		switch list[domainFrontIndex].Provider {
 		case "AWS":

@@ -32,7 +32,7 @@ var filePush = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -63,7 +63,7 @@ var filePull = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 

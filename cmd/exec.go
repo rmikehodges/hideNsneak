@@ -46,7 +46,7 @@ var command = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -80,7 +80,7 @@ var nmap = &cobra.Command{
 			return err
 		}
 
-		err = deployer.ValidateNumberOfInstances(commandIndices, "instance")
+		err = deployer.ValidateNumberOfInstances(commandIndices, "instance", cfgFile)
 		if err != nil {
 			return err
 		}
@@ -93,7 +93,7 @@ var nmap = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -120,7 +120,7 @@ var socatRedirect = &cobra.Command{
 	Short: "socat redirector",
 	Long:  "sets up a socat redirector on the specified port with the specifed target",
 	Args: func(cmd *cobra.Command, args []string) error {
-		return deployer.ValidateNumberOfInstances(commandIndices, "instance")
+		return deployer.ValidateNumberOfInstances(commandIndices, "instance", cfgFile)
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		apps := []string{"socat", "socat-exec"}
@@ -129,7 +129,7 @@ var socatRedirect = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -163,7 +163,7 @@ var socatRedirect = &cobra.Command{
 
 // 		marshalledState := deployer.TerraformStateMarshaller()
 
-// 		list := deployer.ListInstances(marshalledState)
+// 		list := deployer.ListInstances(marshalledState, cfgFile)
 
 // 		var instances []deployer.ListStruct
 
@@ -192,7 +192,7 @@ var cobaltStrikeRun = &cobra.Command{
 		if !match {
 			return fmt.Errorf("invalid kill date format, need YYYY-MM-DD")
 		}
-		err := deployer.ValidateNumberOfInstances(commandIndices, "instance")
+		err := deployer.ValidateNumberOfInstances(commandIndices, "instance", cfgFile)
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
@@ -207,7 +207,7 @@ var cobaltStrikeRun = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 
@@ -234,7 +234,7 @@ var collaboratorRun = &cobra.Command{
 	Short: "Starts burp collaborator server",
 	Long:  "Checks for burp collaborator installation, installs if it does not exist, and starts it",
 	Args: func(cmd *cobra.Command, args []string) error {
-		err := deployer.ValidateNumberOfInstances(commandIndices, "instance")
+		err := deployer.ValidateNumberOfInstances(commandIndices, "instance", cfgFile)
 		return err
 	},
 	Run: func(cmd *cobra.Command, args []string) {
@@ -254,7 +254,7 @@ var collaboratorRun = &cobra.Command{
 
 		marshalledState := deployer.TerraformStateMarshaller()
 
-		list := deployer.ListInstances(marshalledState)
+		list := deployer.ListInstances(marshalledState, cfgFile)
 
 		var instances []deployer.ListStruct
 

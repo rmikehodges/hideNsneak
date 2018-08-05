@@ -5,9 +5,9 @@
     chdir: /opt/empire
       
 - pause:
-    seconds: 5
+    seconds: 5/opt/Empire_http80.ps1
 
 - fetch: 
-    src: /opt/Empire_http80.ps1
+    src: 
     dest: stager.ps1
     flat: yes
