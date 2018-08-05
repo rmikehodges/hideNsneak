@@ -491,7 +491,7 @@ func TerraformApply(configFile string) {
 	filepath := getTerraformDirectory()
 	config := createConfig(configFile)
 
-	//Initializing Terraform
+	// Initializing Terraform
 	args := "init -backend-config=\"access_key=" + config.AwsAccessID + "\" -backend-config=\"secret_key=" + config.AwsSecretKey + "\""
 
 	execBashTerraform(args, filepath)
@@ -1027,8 +1027,8 @@ func DomainFrontDeploy(provider string, origin string, restrictUA string,
 	cloudfrontmMduleCount := wrappers.CloudfrontModuleCount
 
 	googlefrontModuleCount := wrappers.GooglefrontModuleCount
-
-	if strings.ToUpper(provider) == "AWS" {
+	switch strings.ToUpper(provider) {
+	case "AWS":
 		if len(wrappers.Cloudfront) > 0 {
 			for _, wrapper := range wrappers.Cloudfront {
 				if origin == wrapper.Origin {
@@ -1047,8 +1047,7 @@ func DomainFrontDeploy(provider string, origin string, restrictUA string,
 				Enabled:    "true",
 			})
 		}
-	} else if strings.ToUpper(provider) == "GOOGLE" {
-
+	case "GOOGLE":
 		if len(wrappers.Googlefront) > 0 {
 			for _, wrapper := range wrappers.Googlefront {
 				if origin == wrapper.HostURL {
@@ -1068,7 +1067,7 @@ func DomainFrontDeploy(provider string, origin string, restrictUA string,
 				tempConfig.SourceFile = indexFile
 				tempConfig.PackageFile = packageFile
 
-				wrappers.Googlefront = append(wrappers.Googlefront)
+				wrappers.Googlefront = append(wrappers.Googlefront, tempConfig)
 			}
 		} else {
 			tempConfig := GooglefrontConfigWrapper{
@@ -1088,6 +1087,11 @@ func DomainFrontDeploy(provider string, origin string, restrictUA string,
 			wrappers.Googlefront = append(wrappers.Googlefront, tempConfig)
 			wrappers.GooglefrontModuleCount = wrappers.GooglefrontModuleCount + 1
 		}
+	case "AZURE":
+		fmt.Println("Current unsupported provider")
+		return wrappers
+	default:
+		return wrappers
 	}
 
 	return wrappers
