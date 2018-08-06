@@ -20,22 +20,25 @@ hideNsneak provides a simple interface that allows penetration testers to build 
 hideNsneak can: 
 
 * *`deploy`, `destroy`, and `list`*
-	1. Cloud instances via EC2, Google Cloud, Digital Ocean, Azure, and Alibaba Cloud
+	1. Cloud instances via EC2 and Digital Ocean (Google Cloud, Azure, and Alibaba Cloud coming soon)
 	2. API Gateway (AWS)
-	3. Domain fronts via CloudFront and Azure Cloudfront
+	3. Domain fronts via AWS Cloudfront and Google Cloud Functions (Azure CDN coming soon)
 
-* *Proxy into said infrastructure*
+* *Proxy through infrastructure*
+* *Deploy C2 redirectors*
 * *Send and receive files*
 * *Port scanning via NMAP*
 * *Remote installations of Burp Collab, Cobalt Strike, Socat, LetsEncrypt, GoPhish, and SQLMAP*
+* *work with teams teams*
 
 
 Running locally
 ---------------
 *A few disclosures for V 1.0:*
-* At this time, all hosts are assumed `Ubuntu 16.04 Linux`. In the future, we're hoping to add on a docker container to decrease initial setup time
-* The only cloud providers currently setup are AWS and Digital Ocean
-* *You need to make sure that go is installed.* Instructions can be found [here](https://golang.org/dl/)
+* At this time, all hosts are assumed `Ubuntu 16.04 Linux`.
+* Setup is done on your local system (Linux and Mac Only). In the future, we're hoping to add on a docker container to decrease initial setup time
+* The only vps providers currently setup are AWS and Digital Ocean
+* *You need to make sure that go is installed.* Instructions can be found [here](https://golang.org/doc/install)
 
 1. Create a new AWS S3 bucket in `us-east-1`
 	- Ensure this is not public as it will hold your terraform state
@@ -45,7 +48,8 @@ Running locally
 5. `cp config/example-config.json config/config.json` 
 	- fill in the values
 	- aws_access_id, aws_secret_key, aws_bucket_name, public_key, private_key, ec2_user, and do_user are required at minimum
-  - all operators working on the same state must have config values filled in all the same fields
+	- all operators working on the same state must have config values filled in all the same fields
+	- private and public keys must be the same for each operator
 6. now you can use the program by running `./hidensneak [command]`
 
 Commands
