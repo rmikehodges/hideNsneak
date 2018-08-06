@@ -226,7 +226,7 @@ func init() {
 	domainFrontDeploy.PersistentFlags().StringVarP(&domainFrontOrigin, "target", "t", "", "[Required] the target domain or IP address of your C2 server. For Google your C2 server must support HTTPS.")
 	domainFrontDeploy.MarkPersistentFlagRequired("target")
 
-	domainFrontDeploy.PersistentFlags().StringVarP(&frontedDomain, "frontedDomain", "d", "", "[Required for Google] the domain to front as and use in defensive measures i.e. inbox.google.com")
+	domainFrontDeploy.PersistentFlags().StringVarP(&frontedDomain, "frontedDomain", "f", "", "[Required for Google] the domain to front as and use in defensive measures i.e. inbox.google.com")
 	domainFrontDeploy.PersistentFlags().StringVarP(&functionName, "name", "n", "", "[Required for Google] the function name of the Google cloud function i.e actionjacksonb")
 	domainFrontDeploy.PersistentFlags().StringVar(&restrictUA, "restrictua", "", "[Optional for Google] the User Agent header to check for valid requests. only matched User Agents will be forwarded to the C2")
 

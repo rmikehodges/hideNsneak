@@ -218,7 +218,7 @@ const googleDomainFrontCode = `
 let httpProxy = require('http-proxy'),
     ip = require('ip');
 
-let proxy = httpProxy.createProxyServer({secure: true});
+let proxy = httpProxy.createProxyServer({secure: false});
 
 let host = "{{.Host}}"
 let target = "{{.HostURL}}"
@@ -240,7 +240,7 @@ exports.redirector = (req, res) => {
             res.redirect(frontedDomain)
             return
         }
-        req.host = host
+        req.headers["Host"] = host
         proxy.web(req, res, { target: target });
     } else {
         res.redirect(frontedDomain)
