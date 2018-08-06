@@ -146,4 +146,4 @@ We would love to have you contribute to hideNsneak. Feel free to pull the repo a
 
 License 
 -------
-MIT
+[MIT](LICENSE)
