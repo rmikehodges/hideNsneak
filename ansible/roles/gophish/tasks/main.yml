@@ -1,8 +1,8 @@
 ---
  - name: Check for existing install
-    stat: path=/opt/gophish
-    become: yes
-    register: gophish_installed
+   stat: path=/opt/gophish
+   become: yes
+   register: gophish_installed
 
  - debug: msg="gophish is already installed"
     when:
