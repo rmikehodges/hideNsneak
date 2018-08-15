@@ -140,6 +140,18 @@ This is usually due to artifacts being left in the state from old deployments. B
 * `terraform state rm <module or resource name>`
 
 
+
+Error: Error locking state: Error acquiring the state lock: ConditionalCheckFailedException: The conditional request failed
+	status code: 400, request id: P7BUM7NA56LQEJQC20A3SE2SOVVV4KQNSO5AEMVJF66Q9ASUAAJG
+Lock Info:
+  ID:        4919d588-6b29-4aa7-d917-2bcb67c14ab4
+  
+If this does not go away after another user has finished deploying then it is usually due to to Terraform not automatically unlocking your state in the face of errors. This can be fixed by running the following:
+* `terraform force-unlock <ID> $GOPATH/src/github.com/rmikehodges/hideNsneak/terraform`
+
+Note that this will unlock the state so it may have an adverse affect on any other writes happening in the state so make sure your other users are not actively deploying/destroying anything when you run this.
+
+
 Contributions
 -------------
 We would love to have you contribute to hideNsneak. Feel free to pull the repo and start contributing, we will review pull requests as we receive them. If you feel like some things need improvement or some features need adding, feel free to open up an issue and hopefully -- someone will pick it up. 
