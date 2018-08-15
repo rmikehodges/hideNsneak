@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"html/template"
 	"io/ioutil"
 	"log"
 	"os"
@@ -13,6 +12,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"text/template"
 
 	"gopkg.in/yaml.v2"
 )
@@ -456,8 +456,6 @@ func InitializeTerraformFiles(configFile string) {
 
 	err = backendBucket.Execute(backendBuff, &config)
 
-	noEscapeSecrets := template.HTML(secretBuff.String())
-
 	mainFile, err := os.Create(tfMainFile)
 	checkErr(err)
 	defer mainFile.Close()
@@ -472,9 +470,9 @@ func InitializeTerraformFiles(configFile string) {
 
 	fmt.Println("Creating Terraform Files...")
 
-	mainFile.Write([]byte(backendBuff.String()))
+	mainFile.Write(backendBuff.Bytes())
 	varFile.Write([]byte(variables))
-	tfvarsFile.Write([]byte(noEscapeSecrets))
+	tfvarsFile.Write(secretBuff.Bytes())
 }
 
 //TerraformApply runs the init, plan, and apply commands for our
