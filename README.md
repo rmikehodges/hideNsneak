@@ -40,6 +40,7 @@ Running locally
 * Setup is done on your local system (Linux and Mac Only). In the future, we're hoping to add on a docker container to decrease initial setup time
 * The only vps providers currently setup are AWS and Digital Ocean
 * *You need to make sure that go is installed.* Instructions can be found [here](https://golang.org/doc/install)
+* the GOPATH environment variable MUST be set
 
 1. Create a new AWS S3 bucket in `us-east-1`
 	- Ensure this is not public as it will hold your terraform state
