@@ -38,7 +38,7 @@ fi
 echo "Checking Terraform Installation...."
 if ! exists "terraform"
 then
-    curl -sLo /tmp/terraform_${uname}.zip $terraformLink; unzip /tmp/terraform_${uname}.zip -d /usr/local/bin/
+    curl -sLo /tmp/terraform_${uname}.zip $terraformLink; sudo unzip /tmp/terraform_${uname}.zip -d /usr/local/bin/
 fi
 
 echo "Installing Ansible...."
