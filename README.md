@@ -152,6 +152,17 @@ If this does not go away after another user has finished deploying then it is us
 
 Note that this will unlock the state so it may have an adverse affect on any other writes happening in the state so make sure your other users are not actively deploying/destroying anything when you run this.
 
+If you encounter an error along the following:
+
+* `Error: module.googlefrontDeploy2.google_storage_bucket.bucket: configuration for module.googlefrontDeploy2.provider.google is not present; a provider configuration block is required for all operations`
+
+This often means that there are items in the state you are not accounting for. This can be remediated by performing the following:
+
+* `cd terraform`
+* `terraform state list` - this will provide you the list of resources in the state
+* `terraform state rm <offending module or resource from above>` - this will remove the offending resource from the state and you should be good to go. If the resource is still active then ensure you manually delete it.
+
+
 
 Contributions
 -------------

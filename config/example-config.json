@@ -9,7 +9,7 @@
     "azure_location": "",
     "azure_subscription_id": "",
     "google_credentials_path": "",
-    "google_project": "",
+    "google_project_id": "",
     "public_key":"",
     "private_key":"",
     "do_user": "root",
