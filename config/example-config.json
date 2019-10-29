@@ -1,0 +1,18 @@
+{
+    "aws_access_id": "",
+    "aws_secret_key": "",
+    "aws_bucket_name": "",
+    "digitalocean_token":"",
+    "azure_tenant_id": "",
+    "azure_client_id": "",
+    "azure_client_secret": "",
+    "azure_location": "",
+    "azure_subscription_id": "",
+    "google_credentials_path": "",
+    "google_project_id": "",
+    "public_key":"",
+    "private_key":"",
+    "do_user": "root",
+    "ec2_user": "ubuntu",
+    "google_user": "ubuntu"
+}

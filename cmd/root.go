@@ -1,35 +1,14 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
 var cfgFile string
-
-var configTemplate = `
-{
-    "aws_access_id": "",
-    "aws_secret_key": "",
-    "aws_bucket_name": "",
-    "digitalocean_token":"",
-    "azure_tenant_id": "",
-    "azure_client_id": "",
-    "azure_client_secret": "",
-    "azure_location": "",
-    "azure_subscription_id": "",
-    "google_credentials_path": "",
-    "google_project_id": "",
-    "public_key":"",
-    "private_key":"",
-    "do_user": "root",
-    "ec2_user": "ubuntu",
-    "google_user": "ubuntu"
-}
-`
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -71,10 +50,15 @@ func initConfig() {
 	cfgFile = goPath + "/src/github.com/rmikehodges/hideNsneak/config/config.json"
 
 	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
-		f, err := os.Create(cfgFile)
-		defer f.Close()
-		w := bufio.NewWriter(f)
-		gg, err := w.WriteString(configTemplate)
+		data, err := ioutil.ReadFile(goPath + "/src/github.com/rmikehodges/hideNsneak/config/example-config.json")
+		if err != nil {
+			fmt.Println(err)
+		}
+		// Write data to dst
+		err = ioutil.WriteFile(cfgFile, data, 0644)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
 }
