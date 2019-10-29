@@ -8,6 +8,7 @@ import (
 	"github.com/rmikehodges/hideNsneak/deployer"
 )
 
+//TODO: Go says to remove underscores, would need to be updated throughout the file
 var aws_secret_key string
 var aws_access_key string
 var aws_bucket_name string
@@ -24,9 +25,6 @@ var private_key string
 var do_user string
 var ec2_user string
 var google_user string
-
-goPath := os.Getenv("GOPATH")
-configPath = goPath + "/src/github.com/rmikehodges/hideNsneak/config/config.json"
 
 var setup = &cobra.Command{
 	Use:   "setup",
@@ -46,12 +44,13 @@ var aws = &cobra.Command{
 	Short: "setup aws variables",
 	Long:  `Setup your aws secrets as well as dynamo table`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config = deployer.RetrieveConfig(configPath)
+		config = deployer.RetrieveConfig(cfgFile)
 
 		config.aws_access_key = aws_access_key
 		config.aws_secret_key = aws_secret_key
+		config.aws_bucket_name = aws_bucket_name
 
-		deployer.UpdateConfig(configPath)
+		deployer.UpdateConfig(cfgFile)
 
 		deployer.InitializeBackendDDB(aws_access_key, aws_secret_key)
 	},
@@ -62,7 +61,7 @@ var config = &cobra.Command{
 	Short: "dump the config file",
 	Long:  `Shows the contents of the config file`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(deployer.RetrieveConfig(configPath))
+		fmt.Println(deployer.RetrieveConfig(cfgFile))
 	},
 }
 
@@ -71,11 +70,11 @@ var do = &cobra.Command{
 	Short: "setup do variables",
 	Long:  `Setup your do secrets`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config = deployer.RetrieveConfig(configPath)
+		config = deployer.RetrieveConfig(cfgFile)
 
 		config.digitalocean_token = digitalocean_token
 
-		deployer.UpdateConfig(configPath)
+		deployer.UpdateConfig(cfgFile)
 	},
 }
 
@@ -84,7 +83,7 @@ var azure = &cobra.Command{
 	Short: "setup azure variables",
 	Long:  `Setup your azure secrets`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config = deployer.RetrieveConfig(configPath)
+		config = deployer.RetrieveConfig(cfgFile)
 
 		config.azure_tenant_id = azure_tenant_id
 		config.azure_client_id = azure_client_id
@@ -92,7 +91,7 @@ var azure = &cobra.Command{
 		config.azure_location = azure_location
 		config.azure_subscription_id = azure_subscription_id
 
-		deployer.UpdateConfig(configPath)
+		deployer.UpdateConfig(cfgFile)
 	},
 }
 
@@ -106,7 +105,7 @@ var ssh = &cobra.Command{
 		config.public_key = public_key
 		config.private_key = private_key
 
-		deployer.UpdateConfig(configPath)
+		deployer.UpdateConfig(cfgFile)
 	},
 }
 
@@ -114,22 +113,24 @@ func init() {
 	rootCmd.AddCommand(setup)
 	setup.AddCommand(aws, azure, do)
 
-	aws.PersistentFlags().StringSliceVarP(&aws_secret_key, "secret", "s", nil, "[Required] AWS secret key")
+	aws.PersistentFlags().StringVarP(&aws_secret_key, "secret", "s", "", "[Required] AWS secret key")
 	aws.MarkPersistentFlagRequired("secret")
-	aws.PersistentFlags().StringSliceVarP(&aws_secret_key, "access", "a", nil, "[Required] AWS access key")
+	aws.PersistentFlags().StringVarP(&aws_access_key, "access", "a", "", "[Required] AWS access key")
 	aws.MarkPersistentFlagRequired("access")
+	aws.PersistentFlags().StringVarP(&aws_bucket_name, "bucket", "b", "", "[Required] AWS bucket for state management")
+	aws.MarkPersistentFlagRequired("bucket")
 
-	azure.PersistentFlags().StringSliceVarP(&azure_tenant_id, "tenant", "t", nil, "[Required] azure tenant id")
-	azure.PersistentFlags().StringSliceVarP(&azure_client_id, "client", "c", nil, "[Required] azure client id")
-	azure.PersistentFlags().StringSliceVarP(&azure_client_secret, "secret", "s", nil, "[Required] azure client secret")
-	azure.PersistentFlags().StringSliceVarP(&azure_location, "location", "l", nil, "[Required] azure location")
-	azure.PersistentFlags().StringSliceVarP(&azure_subscription_id, "sub", "i", nil, "[Required] azure subscription id")
+	azure.PersistentFlags().StringVarP(&azure_tenant_id, "tenant", "t", "", "[Required] azure tenant id")
+	azure.PersistentFlags().StringVarP(&azure_client_id, "client", "c", "", "[Required] azure client id")
+	azure.PersistentFlags().StringVarP(&azure_client_secret, "secret", "s", "", "[Required] azure client secret")
+	azure.PersistentFlags().StringVarP(&azure_location, "location", "l", "", "[Required] azure location")
+	azure.PersistentFlags().StringVarP(&azure_subscription_id, "sub", "i", "", "[Required] azure subscription id")
 
-	ssh.PersistentFlags().StringSliceVarP(&private_key, "private", "i", nil, "[Required] ssh private key")
+	ssh.PersistentFlags().StringVarP(&private_key, "private", "i", "", "[Required] ssh private key")
 	ssh.MarkPersistentFlagRequired("private")
-	ssh.PersistentFlags().StringSliceVarP(&public_key, "public", "p", nil, "[Required] ssh public key")
+	ssh.PersistentFlags().StringVarP(&public_key, "public", "p", "", "[Required] ssh public key")
 	ssh.MarkPersistentFlagRequired("public")
 
-	do.PersistentFlags().StringSliceVarP(&private_key, "token", "t", nil, "[Required] do secret token")
+	do.PersistentFlags().StringVarP(&private_key, "token", "t", "", "[Required] do secret token")
 	do.MarkPersistentFlagRequired("token")
 }

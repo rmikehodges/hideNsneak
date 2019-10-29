@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 
@@ -8,6 +9,27 @@ import (
 )
 
 var cfgFile string
+
+var configTemplate = `
+{
+    "aws_access_id": "",
+    "aws_secret_key": "",
+    "aws_bucket_name": "",
+    "digitalocean_token":"",
+    "azure_tenant_id": "",
+    "azure_client_id": "",
+    "azure_client_secret": "",
+    "azure_location": "",
+    "azure_subscription_id": "",
+    "google_credentials_path": "",
+    "google_project_id": "",
+    "public_key":"",
+    "private_key":"",
+    "do_user": "root",
+    "ec2_user": "ubuntu",
+    "google_user": "ubuntu"
+}
+`
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -38,13 +60,21 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
+
+	// config file is a parameter but its set to default here
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "$GOPATH/src/github.com/rmikehodges/hideNsneak/config/config.json", "config file")
 }
 
 // initConfig expands the filepath for the user
 func initConfig() {
-	if cfgFile == "$GOPATH/src/github.com/rmikehodges/hideNsneak/config/config.json" {
-		goPath := os.Getenv("GOPATH")
-		cfgFile = goPath + "/src/github.com/rmikehodges/hideNsneak/config/config.json"
+	goPath := os.Getenv("GOPATH")
+	cfgFile = goPath + "/src/github.com/rmikehodges/hideNsneak/config/config.json"
+
+	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
+		f, err := os.Create(cfgFile)
+		defer f.Close()
+		w := bufio.NewWriter(f)
+		gg, err := w.WriteString(configTemplate)
 	}
+
 }

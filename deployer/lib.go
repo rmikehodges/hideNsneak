@@ -23,16 +23,14 @@ import (
 ////////////////////////
 
 func RetrieveConfig(configFilePath string) (config configStruct) {
-	config := createConfig(configFilePath)
+	config = createConfig(configFilePath)
 	return
 }
 
-func UpdateConfig(configFilePath string) {
-	config := createConfig(configFilePath)
+func UpdateConfig(configFilePath string, config configStruct) {
+	file, _ := json.MarshalIndent(config, "", " ")
 
-	file, _ := json.MarshalIndent(data, "", " ")
-
-	err = ioutil.WriteFile(configFilePath, file, 0500)
+	err := ioutil.WriteFile(configFilePath, file, 0500)
 	if err != nil {
 		fmt.Println("Unable to write to config")
 	}

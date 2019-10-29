@@ -18,7 +18,7 @@ import (
 
 // InitializeBackendDDB stands up the dynamo db for the terraform state
 func InitializeBackendDDB(awsAccessKey string, awsSecretKey string) {
-	dir = "terraform/backend"
+	dir := "terraform/backend"
 	args := "init -backend-config=\"access_key=" + awsAccessKey + "\" -backend-config=\"secret_key=" + awsSecretKey + "\""
 	execBashTerraform(args, dir)
 }
