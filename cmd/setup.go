@@ -44,19 +44,19 @@ var aws = &cobra.Command{
 	Short: "setup aws variables",
 	Long:  `Setup your aws secrets as well as dynamo table`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config = deployer.RetrieveConfig(cfgFile)
+		configStruct = deployer.RetrieveConfig(cfgFile)
 
-		config.aws_access_key = aws_access_key
-		config.aws_secret_key = aws_secret_key
-		config.aws_bucket_name = aws_bucket_name
+		configStruct.aws_access_key = aws_access_key
+		configStruct.aws_secret_key = aws_secret_key
+		configStruct.aws_bucket_name = aws_bucket_name
 
-		deployer.UpdateConfig(cfgFile)
+		deployer.UpdateConfig(configStruct)
 
 		deployer.InitializeBackendDDB(aws_access_key, aws_secret_key)
 	},
 }
 
-var config = &cobra.Command{
+var configStruct = &cobra.Command{
 	Use:   "config",
 	Short: "dump the config file",
 	Long:  `Shows the contents of the config file`,
@@ -70,11 +70,11 @@ var do = &cobra.Command{
 	Short: "setup do variables",
 	Long:  `Setup your do secrets`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config = deployer.RetrieveConfig(cfgFile)
+		configStruct = deployer.RetrieveConfig(cfgFile)
 
-		config.digitalocean_token = digitalocean_token
+		configStruct.digitalocean_token = digitalocean_token
 
-		deployer.UpdateConfig(cfgFile)
+		deployer.UpdateConfig(configStruct)
 	},
 }
 
@@ -83,15 +83,15 @@ var azure = &cobra.Command{
 	Short: "setup azure variables",
 	Long:  `Setup your azure secrets`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config = deployer.RetrieveConfig(cfgFile)
+		configStruct = deployer.RetrieveConfig(cfgFile)
 
-		config.azure_tenant_id = azure_tenant_id
-		config.azure_client_id = azure_client_id
-		config.azure_client_secret = azure_client_secret
-		config.azure_location = azure_location
-		config.azure_subscription_id = azure_subscription_id
+		configStruct.azure_tenant_id = azure_tenant_id
+		configStruct.azure_client_id = azure_client_id
+		configStruct.azure_client_secret = azure_client_secret
+		configStruct.azure_location = azure_location
+		configStruct.azure_subscription_id = azure_subscription_id
 
-		deployer.UpdateConfig(cfgFile)
+		deployer.UpdateConfig(configStruct)
 	},
 }
 
@@ -100,12 +100,12 @@ var ssh = &cobra.Command{
 	Short: "setup ssh key",
 	Long:  `Setup your ssh key to control your infrastructure`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config = deployer.RetrieveConfig()
+		configStruct = deployer.RetrieveConfig()
 
-		config.public_key = public_key
-		config.private_key = private_key
+		configStruct.public_key = public_key
+		configStruct.private_key = private_key
 
-		deployer.UpdateConfig(cfgFile)
+		deployer.UpdateConfig(configStruct)
 	},
 }
 
