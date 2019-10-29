@@ -11,7 +11,16 @@ RUN apk update && apk add --no-cache bash \
                                      py-pip \
                                      ansible \
                                      terraform
-WORKDIR /opt/hidensneak
+
+WORKDIR /go/src/hideNsneak
 COPY . .
 
-ENTRYPOINT ["bash"]
+RUN go get -d -v ./...
+RUN go install -v ./...
+
+# cd terraform/backend
+# terraform init -input=true
+# terraform apply
+# cd ../../
+
+ENTRYPOINT [ "/bin/bash", "-c", "hideNsneak" ]
