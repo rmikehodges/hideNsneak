@@ -41,6 +41,9 @@ Running locally
 
 1. Create a new AWS S3 bucket in `us-east-1`
 	- Ensure this is not public as it will hold your terraform state
+2. Build the docker image
+3. Exec the docker image
+4. You can also alias the docker exec to make it run under hideNsneak
 
 
 Commands
