@@ -30,33 +30,32 @@ hideNsneak can:
 * *Send and receive files*
 * *Port scanning via NMAP*
 * *Remote installations of Burp Collab, Cobalt Strike, Socat, LetsEncrypt, GoPhish, and SQLMAP*
-* *work with teams teams*
+* *Work with teams*
 
 
 Running locally
 ---------------
-*A few disclosures for V 1.0:*
+*A few disclosures for V 2.0:*
 * At this time, all hosts are assumed `Ubuntu 16.04 Linux`.
-* Setup is done on your local system (Linux and Mac Only). In the future, we're hoping to add on a docker container to decrease initial setup time
-* The only vps providers currently setup are AWS and Digital Ocean
-* *You need to make sure that go is installed.* Instructions can be found [here](https://golang.org/doc/install)
-* the GOPATH environment variable MUST be set
+* All code is run inside of a docker container, this includes your secrets
 
 1. Create a new AWS S3 bucket in `us-east-1`
 	- Ensure this is not public as it will hold your terraform state
-2. `go get github.com/rmikehodges/hideNsneak`
-3. `cd $GOPATH/src/github.com/rmikehodges/hideNsneak`
-4. `./setup.sh`
-5. `cp config/example-config.json config/config.json` 
-	- fill in the values
-	- aws_access_id, aws_secret_key, aws_bucket_name, public_key, private_key, ec2_user, and do_user are required at minimum
-	- all operators working on the same state must have config values filled in all the same fields
-	- private and public keys must be the same for each operator
-6. now you can use the program by running `./hidensneak [command]`
+2. `docker build -t hidensneak .`
+3. `docker exec -it hidensneak <args>`
+4. `alias hideNsneak='docker exec -it hidensneak'`
+5. `hideNsneak setup aws -s <secret> -a <access> -b <bucket>`
+6. From here you can setup your other keys for other services or run solely on AWS
+
 
 Commands
 ---------
 * `hidensneak help` --> run this anytime to get available commands 
+
+* `hidensneak setup aws`
+* `hidensneak setup azure`
+* `hidensneak setup do`
+* `hidensneak setup ssh`
 
 * `hidensneak instance deploy`
 * `hidensneak instance destroy`

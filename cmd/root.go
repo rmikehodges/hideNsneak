@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -38,13 +39,26 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
+
+	// config file is a parameter but its set to default here
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "$GOPATH/src/github.com/rmikehodges/hideNsneak/config/config.json", "config file")
 }
 
 // initConfig expands the filepath for the user
 func initConfig() {
-	if cfgFile == "$GOPATH/src/github.com/rmikehodges/hideNsneak/config/config.json" {
-		goPath := os.Getenv("GOPATH")
-		cfgFile = goPath + "/src/github.com/rmikehodges/hideNsneak/config/config.json"
+	goPath := os.Getenv("GOPATH")
+	cfgFile = goPath + "/src/github.com/rmikehodges/hideNsneak/config/config.json"
+
+	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
+		data, err := ioutil.ReadFile(goPath + "/src/github.com/rmikehodges/hideNsneak/config/example-config.json")
+		if err != nil {
+			fmt.Println(err)
+		}
+		// Write data to dst
+		err = ioutil.WriteFile(cfgFile, data, 0644)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
+
 }

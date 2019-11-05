@@ -5,9 +5,7 @@ terraform.tfvars
 **/debug
 **/terraform.tfvars
 **/terraform.tfstate*
-config/
-config/backend.txt
-**/*.json
+config/config.json
 terraform/modules/gcf-deployment/files
 terraform/main.tf
 ansible/*.yml
