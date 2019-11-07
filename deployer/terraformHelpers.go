@@ -58,9 +58,16 @@ func execTerraform(args []string, filepath string) string {
 	cmd.Stderr = &stderr
 	cmd.Dir = filepath
 
+	//TODO: Return the stderr and stdout
+
 	err = cmd.Run()
 	if err != nil {
-		fmt.Println(stderr.String())
+		if strings.Contains(stderr.String(), "Failed to load backend: Initialization required") {
+			fmt.Println("Initializing Backend...")
+		} else {
+			fmt.Println(stderr.String())
+		}
+
 	}
 	return stdout.String()
 }

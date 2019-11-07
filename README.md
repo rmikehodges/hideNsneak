@@ -41,10 +41,11 @@ Running locally
 
 1. Create a new AWS S3 bucket in `us-east-1`
 	- Ensure this is not public as it will hold your terraform state
-2. `docker build -t hidensneak .`
-3. `docker run -it hidensneak`
-4. `bash-5.0# hideNsneak --help`
-5. `hideNsneak setup aws -s <secret> -a <access> -b <bucket>`
+2. `./setup.sh`
+3. `go build -o hideNsneak main.go`
+4. `hideNsneak setup aws -s <secret> -a <access> -b <bucket>`
+  - This step is required for first run
+5. `hideNsneak setup --help`
 6. From here you can setup your other keys for other services or run solely on AWS
 
 
