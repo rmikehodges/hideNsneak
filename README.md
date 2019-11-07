@@ -35,9 +35,11 @@ hideNsneak can:
 
 Running locally
 ---------------
-*A few disclosures for V 2.0:*
+*A few disclosures for V 1.1:*
 * At this time, all hosts are assumed `Ubuntu 16.04 Linux`.
-* All code is run inside of a docker container, this includes your secrets: so protect it accordingly.
+* SSH Agents aren't supported
+* All config changes can be done via `hideNsneak setup`
+* `setup.sh` script now just checks and installs dependencies
 
 1. Create a new AWS S3 bucket in `us-east-1`
 	- Ensure this is not public as it will hold your terraform state
