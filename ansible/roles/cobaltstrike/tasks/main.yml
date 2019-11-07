@@ -1,10 +1,13 @@
 ---
 - name: check for existing installation
-  stat: path=/opt/cobaltstrike
+  stat: 
+    path: /opt/cobaltstrike
   become: yes
   register: cobaltstrike_installed
 
-- debug: msg="cobaltstrike is already installed"
+- name: debugging message is cs is already installed
+  debug: 
+    msg: "cobaltstrike is already installed"
   when:
     - cobaltstrike_installed.stat.exists
 
@@ -37,7 +40,9 @@
     - not cobaltstrike_installed.stat.exists
 
 - name: install java 1.8
-  apt: name={{ item }} state=installed
+  apt: 
+    name: {{ item }} 
+    state: installed
   become: yes
   with_items:
     - oracle-java8-installer
@@ -45,7 +50,8 @@
   when:
     - not cobaltstrike_installed.stat.exists
 
-- unarchive:
+- name: unarchive the cobalstrike archive
+  unarchive:
     src: "{{ cobaltstrike_file }}"
     dest: /opt/
   become: yes

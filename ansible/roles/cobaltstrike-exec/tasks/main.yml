@@ -9,10 +9,14 @@
     executable: /bin/bash
   register: cobaltstrike_updated
 
-- debug: msg="{{ cobaltstrike_updated.stdout_lines }}"
+- name: debug statement for cobaltstrike success
+  debug: 
+    msg: "{{ cobaltstrike_updated.stdout_lines }}"
   when: cobaltstrike_updated is succeeded
 
-- debug: msg="{{ cobaltstrike_updated.stderr_lines }}"
+- name: debug state for when cobaltstrike fails
+  debug: 
+    msg: "{{ cobaltstrike_updated.stderr_lines }}"
   when: cobaltstrike_updated is failed
 
 - name: run a sync-push of malleable C2 from localhost to remote server
@@ -27,22 +31,30 @@
   when:
     - cobaltstrike_updated is succeeded
 
-- debug: msg="{{ cobaltstrike_pushed.stdout_lines }}"
+- name: debug message for when cobaltstrike update succeeds 
+  debug: 
+    msg: "{{ cobaltstrike_pushed.stdout_lines }}"
   when: cobaltstrike_updated is succeeded
 
-- debug: msg="{{ cobaltstrike_pushed.stderr_lines }}"
+- name: debug message for when cobalstrike push fails
+  debug: 
+    msg: "{{ cobaltstrike_pushed.stderr_lines }}"
   when: cobaltstrike_pushed is failed
 
-  - name: start cobaltstrike in a screen session
-    command: screen -dmS Cobaltstrike /opt/cobaltstrike/teamserver {{ ansible_host }} {{ password }} {{ path_to_malleable_c2 | basename }} {{ cobaltstrike_kill_date }}
-    args:
-      chdir: /opt/cobaltstrike
+- name: start cobaltstrike in a screen session
+  command: screen -dmS Cobaltstrike /opt/cobaltstrike/teamserver {{ ansible_host }} {{ password }} {{ path_to_malleable_c2 | basename }} {{ cobaltstrike_kill_date }}
+  args:
+    chdir: /opt/cobaltstrike
     register: cobaltstrike_ran
     when:
       - cobaltstrike_updated is succeeded
 
-- debug: msg="screen -dmS Cobaltstrike /opt/cobaltstrike/teamserver {{ ansible_host }} {{ password }} {{ path_to_malleable_c2 | basename }} {{ cobaltstrike_kill_date }}"
+- name: debug message when cobaltstrike is run successfully
+  debug: 
+    msg: "screen -dmS Cobaltstrike /opt/cobaltstrike/teamserver {{ ansible_host }} {{ password }} {{ path_to_malleable_c2 | basename }} {{ cobaltstrike_kill_date }}"
   when: cobaltstrike_ran is succeeded
 
-- debug: msg="Command Failed"
+- name: debug message when cobaltstrike run has failed
+  debug: 
+    msg: "Command Failed"
   when: cobaltstrike_ran is failed

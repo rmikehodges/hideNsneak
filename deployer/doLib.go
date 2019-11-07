@@ -41,7 +41,7 @@ func genDOKeyFingerprint(publicKey string) (keyFingerprint string) {
 
 //GetDoRegions returns the list of available regions for digital ocean
 func GetDoRegions(configFile string) (regions []string) {
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 	client := newDOClient(config.DigitaloceanToken)
 	regions, err := doRegions(client)
 	if err != nil {

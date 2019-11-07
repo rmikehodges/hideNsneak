@@ -16,13 +16,6 @@ import (
 //Terraform Functions
 /////////////////////
 
-// InitializeBackendDDB stands up the dynamo db for the terraform state
-func InitializeBackendDDB(awsAccessKey string, awsSecretKey string) {
-	dir := "terraform/backend"
-	args := "init -backend-config=\"access_key=" + awsAccessKey + "\" -backend-config=\"secret_key=" + awsSecretKey + "\""
-	execBashTerraform(args, dir)
-}
-
 // getTerraformDirectory expands the filepath for the user
 func getTerraformDirectory() (tfDirectory string) {
 	goPath := os.Getenv("GOPATH")
@@ -36,13 +29,11 @@ func execBashTerraform(args string, filepath string) string {
 	var stdout, stderr bytes.Buffer
 
 	binary, err := exec.LookPath("terraform")
+	checkErr(err)
 
 	args = binary + " " + args
 
-	checkErr(err)
-
 	cmd := exec.Command("/bin/bash", "-c", args)
-
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	cmd.Dir = filepath
@@ -71,7 +62,6 @@ func execTerraform(args []string, filepath string) string {
 	if err != nil {
 		fmt.Println(stderr.String())
 	}
-
 	return stdout.String()
 }
 
@@ -79,7 +69,7 @@ func execTerraform(args []string, filepath string) string {
 //the terraform infrastructure
 func InitializeTerraformFiles(configFile string) {
 
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 
 	secrets, err := template.New("secrets").Parse(templateSecrets)
 
@@ -124,11 +114,24 @@ func InitializeTerraformFiles(configFile string) {
 	tfvarsFile.Write(secretBuff.Bytes())
 }
 
+func TerraformFirstInitialize(awsAccessID string, awsSecretKey string) string {
+	filepath := "terraform/backend"
+
+	// Initializing Terraform
+	argsSlice := []string{"init"}
+	execTerraform(argsSlice, filepath)
+
+	//Applying Changes Identified in tfplan
+	fmt.Println("Applying Terraform Changes...")
+	argsSlice = []string{"apply", "-input=false", "-auto-approve", "-var=aws_secret_key=" + awsSecretKey, "-var=aws_access_key=" + awsAccessID}
+	return execTerraform(argsSlice, filepath)
+}
+
 //TerraformApply runs the init, plan, and apply commands for our
 //generated terraform templates
 func TerraformApply(configFile string) {
 	filepath := getTerraformDirectory()
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 
 	// Initializing Terraform
 	args := "init -backend-config=\"access_key=" + config.AwsAccessID + "\" -backend-config=\"secret_key=" + config.AwsSecretKey + "\""
@@ -145,7 +148,7 @@ func TerraformApply(configFile string) {
 
 func TerraformDestroy(nameList []string, configFile string) {
 	filepath := getTerraformDirectory()
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 
 	//Initializing Terraform
 	args := "init -backend-config=\"access_key=" + config.AwsAccessID + "\" -backend-config=\"secret_key=" + config.AwsSecretKey + "\""
@@ -423,7 +426,7 @@ func ListAPIs(state State) (apiOutputs []APIOutput) {
 }
 
 func ListInstances(state State, configFile string) (hostOutput []ListStruct) {
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 
 	privateKey := config.PrivateKey
 
@@ -482,7 +485,7 @@ func ListInstances(state State, configFile string) (hostOutput []ListStruct) {
 func InstanceDeploy(providers []string, awsRegions []string, doRegions []string, azureRegions []string,
 	googleRegions []string, count int, keyName string, wrappers ConfigWrappers, configFile string) ConfigWrappers {
 
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 	doModuleCount := wrappers.DropletModuleCount
 	awsModuleCount := wrappers.EC2ModuleCount
 
@@ -737,7 +740,7 @@ func DomainFrontDeploy(provider string, origin string, restrictUA string,
 //AWSCloufFrontDestroy uses the deleteCloudFront function to delete
 //the specified cloudfront due to the problems with terraforms destruction process
 func AWSCloudFrontDestroy(output DomainFrontOutput, configFile string) error {
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 	filepath := getTerraformDirectory()
 
 	err := deleteCloudFront(output.ID, output.Etag, config.AwsAccessID, config.AwsSecretKey)

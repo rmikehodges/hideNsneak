@@ -2,11 +2,13 @@
 #Executes set of nmap commands on the server
 
 - name: check if nmap dir exists
-  stat: path=/tmp/nmap
+  stat: 
+    path: /tmp/nmap
   register: dir_exists
 
-- name: Creates nmap directory
-  file: path=/tmp/nmap state=directory
+- name: creates nmap directory
+  file: 
+    path: /tmp/nmap state=directory
   when:
     - not dir_exists.stat.exists
 

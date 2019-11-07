@@ -2,7 +2,8 @@
 # Synchronize two directories on one remote host.
 
 - name: check if remote file exists 
-  stat: path={{ remote_absolute_path }}
+  stat: 
+    path: "{{ remote_absolute_path }}"
   become: yes
   register: remote_file_exists
 

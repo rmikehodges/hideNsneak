@@ -77,7 +77,7 @@ const outputs = `output "providers" {
 
 const mainEc2Module = `
 	module "{{.ModuleName}}" {
-	source          = "modules/ec2-deployment"
+	source          = "./modules/ec2-deployment"
 
 	region_count         = "${map({{$c := counter}}{{range $key, $value := .RegionMap}}{{if call $c}}, {{end}}"{{$key}}",{{$value}}{{end}})}"
 	aws_instance_type    = "{{.InstanceType}}"
@@ -91,7 +91,7 @@ const mainEc2Module = `
 `
 
 const mainAWSAPIModule = `module "{{.ModuleName}}" {
-	source = "modules/aws-api-gateway"
+	source = "./modules/aws-api-gateway"
   
 	aws_access_key = "${var.aws_access_key}"
 	aws_secret_key = "${var.aws_secret_key}"
@@ -102,7 +102,7 @@ const mainAWSAPIModule = `module "{{.ModuleName}}" {
 `
 
 const mainCloudfrontModule = `module "{{.ModuleName}}" {
-	source = "modules/cloudfront-deployment"
+	source = "./modules/cloudfront-deployment"
   
 	aws_access_key = "${var.aws_access_key}"
 	aws_secret_key = "${var.aws_secret_key}"
@@ -113,7 +113,7 @@ const mainCloudfrontModule = `module "{{.ModuleName}}" {
 
 const mainDropletModule = `
   module "{{.ModuleName}}" {
-	  source              = "modules/droplet-deployment"
+	  source              = "./modules/droplet-deployment"
 	  do_region_count     = "${map({{$c := counter}}{{range $key, $value := .RegionMap}}{{if call $c}}, {{end}}"{{$key}}",{{$value}}{{end}})}"
 	  do_token            = "${var.do_token}"
 	  do_image            = "{{.Image}}"
@@ -126,7 +126,7 @@ const mainDropletModule = `
 
 const azureCdnModule = `
 	module "azure-cdn-{{.Endpoint}}" {
-		source                  = "modules/azure-cdn-deployment"
+		source                  = "./modules/azure-cdn-deployment"
 		azure_subscription_id   = "${var.azure_subscription_id}"
 		azure_tenant_id         = "${var.azure_tenant_id}"
 		azure_client_id         = "${var.azure_client_id}"
@@ -141,7 +141,7 @@ const azureCdnModule = `
 //TODO: need to run removeSpaces() on region when this is set
 const azureModule = `
 	module "azure-{{.Location}}" {
-		source                = "modules/azure-deployment"
+		source                = "./modules/azure-deployment"
 		azure_subscription_id = "${var.azure_subscription_id}"
 		azure_tenant_id       = "${var.azure_tenant_id}"
 		azure_client_id       = "${var.azure_client_id}"
@@ -158,7 +158,7 @@ const azureModule = `
 
 const cloudfrontModule = `
 	module "cloudfront-{{.Region}}" {
-		source            = "modules/cloudfront-deployment"
+		source            = "./modules/cloudfront-deployment"
 		cloudfront_origin = "{{.Origin}}"
 		aws_access_key    = "${var.aws_access_key}"
 		aws_secret_key    = "${var.aws_secret_key}"
@@ -168,7 +168,7 @@ const cloudfrontModule = `
 
 const googleCloudModule = `
 	module "google-cloud-{{.Region}}" {
-		source               	 = "modules/gcp-deployment"
+		source               	 = "./modules/gcp-deployment"
 		gcp_region          	 = "{{.Region}}"
 		gcp_project          	 = "{{.Project}}"
 		gcp_instance_count   	 = {{.Count}}
@@ -183,7 +183,7 @@ const googleCloudModule = `
 
 const apiGatewayModule = `
 	module "apigateway-{{.TargetUri}}" {
-		source 				 = "modules/api-gateway"
+		source 				 = "./modules/api-gateway"
 		aws_access_key    	 = "${var.aws_access_key}"
 		aws_secret_key    	 = "${var.aws_secret_key}"
 		aws_api_target_uri 	 = "{{.TargetURI}"
@@ -193,7 +193,7 @@ const apiGatewayModule = `
 
 const googlefrontModule = `
 module "{{.ModuleName}}" {
-  source = "modules/gcf-deployment"
+  source = "./modules/gcf-deployment"
 
   package_file = "{{.PackageFile}}"
 

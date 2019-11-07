@@ -10,8 +10,12 @@
     executable: /bin/bash
   register: socat_exec_command
 
-- debug: msg="Command Succeeded"
+- name: Debug message for when socat succeeds
+  debug: 
+    msg: "Command Succeeded"
   when: socat_exec_command is succeeded
 
-- debug: msg="Command Failed"
+- name: Debug ,essage for when socat fails
+  debug: 
+    msg: "Command Failed"
   when: socat_exec_command is failed

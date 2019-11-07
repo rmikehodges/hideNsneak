@@ -23,7 +23,7 @@ import (
 ////////////////////////
 
 func RetrieveConfig(configFilePath string) (config configStruct) {
-	config = createConfig(configFilePath)
+	config = createConfigStruct(configFilePath)
 	return
 }
 
@@ -37,7 +37,7 @@ func UpdateConfig(configFilePath string, config configStruct) {
 
 }
 
-func createConfig(configFilePath string) (config configStruct) {
+func createConfigStruct(configFilePath string) (config configStruct) {
 	var configContents, _ = ioutil.ReadFile(configFilePath)
 
 	json.Unmarshal(configContents, &config)

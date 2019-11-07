@@ -114,7 +114,7 @@ func createCloudfrontFromState(modules []ModuleState) (cloudfrontConfigWrappers 
 //EC2///////
 ////////////
 func returnInitialEC2Config(module ModuleState, configFile string) (tempConfig EC2ConfigWrapper) {
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 	privateKey, user := config.PrivateKey, config.EC2User
 
 	tempConfig.RegionMap = make(map[string]int)
@@ -135,7 +135,7 @@ func returnInitialEC2Config(module ModuleState, configFile string) (tempConfig E
 }
 
 func createEC2ConfigFromState(modules []ModuleState, configFile string) (ec2Configs []EC2ConfigWrapper, maxModuleCount int) {
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 	privateKey, user := config.PrivateKey, config.EC2User
 
 	for _, module := range modules {
@@ -190,7 +190,7 @@ func createEC2ConfigFromState(modules []ModuleState, configFile string) (ec2Conf
 //DigitalOcean
 /////////////
 func returnInitialDOConfig(module ModuleState, configFile string) (tempConfig DOConfigWrapper) {
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 	privateKey, user := config.PrivateKey, config.DOUser
 
 	for _, resource := range module.Resources {
@@ -210,7 +210,7 @@ func returnInitialDOConfig(module ModuleState, configFile string) (tempConfig DO
 }
 
 func createDOConfigFromState(modules []ModuleState, configFile string) (doConfigs []DOConfigWrapper, maxModuleCount int) {
-	config := createConfig(configFile)
+	config := createConfigStruct(configFile)
 	privateKey, user := config.PrivateKey, config.DOUser
 
 	for _, module := range modules {

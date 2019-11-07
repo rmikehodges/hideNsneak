@@ -1,10 +1,13 @@
 --- 
 - name: check for existing installation 
-  stat: path=/opt/empire
+  stat: 
+    path: /opt/empire
   become: yes
   register: empire_installed
 
-- debug: msg="powershell empire is already installed"
+- name: debug message for existing installation
+  debug: 
+    msg: "powershell empire is already installed"
   when:
     - empire_installed.stat.exists
 
@@ -17,18 +20,22 @@
     - not empire_installed.stat.exists
 
 - name: ensure git is installed
-  apt: name={{item}} state=present
+  apt: 
+    name: {{item}} 
+    state: present
   with_items:
     - git
     - screen
 
-- git: 
+- name: git clone of empire
+  git: 
     repo: "https://github.com/EmpireProject/Empire"
     version: master
     dest: /opt/empire
     update: yes
 
-- copy: 
+- name: copying files for empire installation
+  copy: 
     src: ../files/startup.rc
     dest: /opt/empire
 

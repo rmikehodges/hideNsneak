@@ -2,12 +2,13 @@
 # Synchronize two directories on one remote host (the inverse of push).
 
 - name: check if remote file exists 
-  stat: path={{ remote_absolute_path }}
+  stat: 
+    path: "{{ remote_absolute_path }}"
   become: yes
   register: remote_file_exists
 
 - name: check if local host exists
-  local_action: stat path={{ host_absolute_path }}
+  local_action: stat path:{{ host_absolute_path }}
   become: no
   register: host_file_exists
 

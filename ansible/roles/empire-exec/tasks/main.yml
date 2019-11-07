@@ -3,11 +3,5 @@
   command: screen -dmS Empire /root/empire/empire --resource /root/empire/EmpireStartup.rc
   args:
     chdir: /opt/empire
-      
-- pause:
-    seconds: 5/opt/Empire_http80.ps1
 
-- fetch: 
-    src: 
-    dest: stager.ps1
-    flat: yes
+# TODO Add playbook

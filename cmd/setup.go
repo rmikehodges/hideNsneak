@@ -52,7 +52,9 @@ var aws = &cobra.Command{
 
 		deployer.UpdateConfig(cfgFile, configStruct)
 
-		deployer.InitializeBackendDDB(awsAccessID, awsSecretKey)
+		fmt.Println(deployer.TerraformFirstInitialize(awsAccessID, awsSecretKey))
+
+		deployer.InitializeTerraformFiles(cfgFile)
 	},
 }
 

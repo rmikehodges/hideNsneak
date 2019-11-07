@@ -76,10 +76,14 @@
     executable: /bin/bash
   register: list
 
-- debug: msg="{{ list.stdout_lines }}"
+- name: debug message for listing success
+  debug: 
+    msg: "{{ list.stdout_lines }}"
   when: 
     - list is succeeded
 
-- debug: msg="{{ list.stderr_lines }}"
+- name:  debug message for list fail
+  debug:
+    msg: "{{ list.stderr_lines }}"
   when: 
     - list is failed

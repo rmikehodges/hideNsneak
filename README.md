@@ -17,7 +17,8 @@ Table of contents
 
 Overview
 ---------
-hideNsneak provides a simple interface that allows penetration testers to build ephemeral infrastructure -- one that requires minimal overhead. 
+hideNsneak provides a simple interface that allows penetration testers to build and manage infrastructure -- one that requires minimal overhead.
+
 hideNsneak can: 
 
 * *`deploy`, `destroy`, and `list`*
@@ -28,22 +29,21 @@ hideNsneak can:
 * *Proxy through infrastructure*
 * *Deploy C2 redirectors*
 * *Send and receive files*
-* *Port scanning via NMAP*
-* *Remote installations of Burp Collab, Cobalt Strike, Socat, LetsEncrypt, GoPhish, and SQLMAP*
-* *Work with teams*
-
+* *Distributed Port Scanning*
+* *Remote installations of Burp Collaborator, Cobalt Strike, Socat, LetsEncrypt, GoPhish, and SQLMAP*
+* *Share and manage infrastructure across various teams.
 
 Running locally
 ---------------
 *A few disclosures for V 2.0:*
 * At this time, all hosts are assumed `Ubuntu 16.04 Linux`.
-* All code is run inside of a docker container, this includes your secrets
+* All code is run inside of a docker container, this includes your secrets: so protect it accordingly.
 
 1. Create a new AWS S3 bucket in `us-east-1`
 	- Ensure this is not public as it will hold your terraform state
 2. `docker build -t hidensneak .`
-3. `docker run -it hidensneak <args>`
-4. `alias hideNsneak='docker run -it hidensneak'`
+3. `docker run -it hidensneak`
+4. `bash-5.0# hideNsneak --help`
 5. `hideNsneak setup aws -s <secret> -a <access> -b <bucket>`
 6. From here you can setup your other keys for other services or run solely on AWS
 

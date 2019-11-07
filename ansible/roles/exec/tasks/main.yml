@@ -7,8 +7,12 @@
     executable: /bin/bash
   register: command
 
-- debug: msg="{{ command.stdout_lines }}"
+- name: debug message for command success
+  debug: 
+    msg: "{{ command.stdout_lines }}"
   when: command is succeeded
 
-- debug: msg="{{ command.stderr_lines }}"
+- name: debug message for command failure
+  debug: 
+    msg: "{{ command.stderr_lines }}"
   when: command is failed

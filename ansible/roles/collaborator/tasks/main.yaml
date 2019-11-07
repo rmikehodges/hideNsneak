@@ -5,14 +5,16 @@
   changed_when: output.stdout != ""
 
 - name: Check for letsencrypt private key
-  stat: path="/etc/letsencrypt/live/{{ ansible_domain_name }}/privkey.pem"
+  stat: 
+    path: "/etc/letsencrypt/live/{{ ansible_domain_name }}/privkey.pem"
   become: yes
   register: existing_letsencrypt_key
   tags:
     - tls
 
 - name: Check for letsencrypt cert
-  stat: path="/etc/letsencrypt/live/{{ ansible_domain_name }}/cert.pem"
+  stat: 
+    path: "/etc/letsencrypt/live/{{ ansible_domain_name }}/cert.pem"
   become: yes
   register: existing_letsencrypt_cert
   tags:
@@ -20,7 +22,8 @@
 
 
 - name: Check for letsecnrypt upstream
-  stat: path="/etc/letsencrypt/live/{{ ansible_domain_name }}/fullchain.pem"
+  stat: 
+    path: "/etc/letsencrypt/live/{{ ansible_domain_name }}/fullchain.pem"
   become: yes
   register: existing_letsencrypt_bundle
   tags:
@@ -36,7 +39,8 @@
     - existing_letsencrypt_bundle.stat.exists
 
 - name: Check for existing private key
-  stat: path=/tmp/burp.key
+  stat: 
+    path: /tmp/burp.key
   become: no
   when:
     - generate_self_signed_certs
@@ -46,7 +50,8 @@
     - tls
 
 - name: Check for existing PKCS8 private key
-  stat: path=/tmp/{{ burp_key }}
+  stat: 
+    path: /tmp/{{ burp_key }}
   become: no
   when:
     - generate_self_signed_certs
@@ -56,7 +61,8 @@
     - tls
 
 - name: Check for existing CSR
-  stat: path=/tmp/burp.csr
+  stat: 
+    path: /tmp/burp.csr
   become: no
   when:
     - generate_self_signed_certs
@@ -66,7 +72,8 @@
     - tls
 
 - name: Check for existing certificate
-  stat: path=/tmp/{{ burp_cert }}
+  stat: 
+    path: /tmp/{{ burp_cert }}
   become: no
   when:
     - generate_self_signed_certs
@@ -76,7 +83,8 @@
     - tls
 
 - name: Check for existing intermediate certificate
-  stat: path=/tmp/{{ burp_ca_bundle }}
+  stat: 
+    path: /tmp/{{ burp_ca_bundle }}
   become: no
   when:
     - generate_self_signed_certs
@@ -138,17 +146,27 @@
     - selfsign
 
 - name: Set up directory for Burp jar
-  file: dest=/usr/share/burp mode=0755 state=directory owner=root group=root
+  file: 
+    dest: /usr/share/burp 
+    mode: 0755 
+    state: directory 
+    owner: root 
+    group: root
   tags:
     - setup
 
 - name: Set up directory for Burp config
-  file: dest=/etc/burp mode=0755 state=directory owner=root group=root
+  file: 
+    dest: /etc/burp mode=0755 
+    state: directory 
+    owner: root 
+    group: root
   tags:
     - setup
 
 - name: Copy Burp jar
-  copy: src={{ item }} dest=/usr/share/burp/burpsuite_pro.jar
+  copy: 
+    src: "{{ item }} dest=/usr/share/burp/burpsuite_pro.jar"
   with_fileglob:
     - "{{ burp_file }}"
   tags:
@@ -156,21 +174,24 @@
     - setup
 
 - name: Copy over server key
-  copy: src=/tmp/{{ burp_key }} dest=/etc/burp/burp.pk8
+  copy: 
+    src: "/tmp/{{ burp_key }} dest=/etc/burp/burp.pk8"
   when:
     - generate_self_signed_certs
   tags:
     - setup
 
 - name: Copy over server cert
-  copy: src=/tmp/{{ burp_cert }} dest=/etc/burp/burp.crt
+  copy: 
+    src: "/tmp/{{ burp_cert }} dest=/etc/burp/burp.crt"
   when:
     - generate_self_signed_certs
   tags:
     - setup
 
 - name: Copy over CA bundle certificates
-  copy: src=/tmp/{{ burp_ca_bundle }} dest=/etc/burp/intermediate.crt
+  copy: 
+    src: "/tmp/{{ burp_ca_bundle }} dest=/etc/burp/intermediate.crt"
   when:
     - generate_self_signed_certs
   tags:
@@ -202,6 +223,8 @@
 
 
 - name: Generate configuration file
-  template: src={{ role_path }}/templates/burpcollaboratorconfig.jinja2 dest=/etc/burp/collaborator.config
-  tags:
-    - configure
+  template: 
+    src: "{{ role_path }}/templates/burpcollaboratorconfig.jinja2"
+    dest: /etc/burp/collaborator.config
+    tags:
+      - configure

@@ -1,5 +1,5 @@
 provider "google" {
-  credentials = "${file("modules/gcp-deployment/inboxa90-f05affa600c1.json")}"
+  credentials = "${file("./modules/gcp-deployment/inboxa90-f05affa600c1.json")}"
   project     = "${var.gcp_project}"
   region      = "${var.gcp_region}"
 }

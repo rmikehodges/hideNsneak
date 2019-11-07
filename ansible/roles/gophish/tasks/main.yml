@@ -1,10 +1,13 @@
 ---
  - name: Check for existing install
-   stat: path=/opt/gophish
+   stat: 
+    path: /opt/gophish
    become: yes
    register: gophish_installed
 
- - debug: msg="gophish is already installed"
+ - name: debug message for when gophish is already installed 
+   debug: 
+    msg: "gophish is already installed"
    when:
       - gophish_installed.stat.exists
 
@@ -21,7 +24,7 @@
  - name: Allow TCP 22 for SSH.
    ufw:
      rule: allow
-     port: 22
+     port: "22"
      proto: tcp
    when:
     - not gophish_installed.stat.exists
@@ -29,7 +32,7 @@
  - name: Allow TCP 443 for Gophish.
    ufw:
      rule: allow
-     port: 443
+     port: "443"
      proto: tcp
    when:
     - not gophish_installed.stat.exists
