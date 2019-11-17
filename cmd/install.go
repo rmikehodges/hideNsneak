@@ -501,6 +501,54 @@ var empireInstall = &cobra.Command{
 		deployer.ExecAnsible("hosts.yml", "main.yml")
 	},
 }
+var cloudracoonInstall = &cobra.Command{
+	Use:   "cloudracoon",
+	Short: "Installs Cloudracoon - AWS",
+	Long:  `Installs Cloudracoon - AWS to remote server`,
+	Args: func(cmd *cobra.Command, args []string) (err error) {
+		err = deployer.IsValidNumberInput(installIndex)
+
+		if err != nil {
+			return
+		}
+
+		expandedNumIndex := deployer.ExpandNumberInput(installIndex)
+
+		err = deployer.ValidateNumberOfInstances(expandedNumIndex, "instance", cfgFile)
+
+		if err != nil {
+			return
+		}
+
+		return
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		apps := []string{"cloudracoon"}
+
+		playbook := deployer.GeneratePlaybookFile(apps)
+
+		marshalledState := deployer.TerraformStateMarshaller()
+
+		list := deployer.ListInstances(marshalledState, cfgFile)
+		var instances []deployer.ListStruct
+
+		expandedNumIndex := deployer.ExpandNumberInput(installIndex)
+
+		for _, num := range expandedNumIndex {
+			instances = append(instances, list[num])
+		}
+
+		hostFile := deployer.GenerateHostFile(instances, domain, burpFile, localFilePath, remoteFilePath,
+			execCommand, socatPort, socatIP, nmapOutput, nmapCommands,
+			cobaltStrikeLicense, cobaltStrikePassword, cobaltStrikeC2Path, cobaltStrikeFile, cobaltStrikeKillDate,
+			ufwAction, ufwTCPPorts, ufwUDPPorts)
+
+		deployer.WriteToFile("ansible/hosts.yml", hostFile)
+		deployer.WriteToFile("ansible/main.yml", playbook)
+
+		deployer.ExecAnsible("hosts.yml", "main.yml")
+	},
+}
 
 func init() {
 	rootCmd.AddCommand(install)
@@ -543,4 +591,7 @@ func init() {
 
 	metasploitInstall.PersistentFlags().StringVarP(&installIndex, "id", "i", "", "[Required] the id for the install")
 	metasploitInstall.MarkFlagRequired("id")
+
+	cloudracoonInstall.PersistentFlags().StringVarP(&installIndex, "id", "i", "", "[Required] the id for the install")
+	cloudracoonInstall.MarkFlagRequired("id")
 }
