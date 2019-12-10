@@ -1,0 +1,11 @@
+---
+- name: Download Metasploit
+  become: true
+  get_url:
+    url: curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb 
+    dest: /tmp/msfinstall
+    mode: 0755
+
+- name: Install Metasploit
+  become: true
+  command: /tmp/msfinstall
